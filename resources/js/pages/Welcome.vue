@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
+import AppLogo from '@/components/AppLogo.vue';
 </script>
 
 <template>
@@ -7,37 +8,65 @@ import { Head, Link } from '@inertiajs/vue3';
         <link rel="preconnect" href="https://rsms.me/" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     </Head>
-    <div class="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] dark:bg-[#0a0a0a] lg:justify-center lg:p-8">
-        <header class="not-has-[nav]:hidden mb-6 w-full max-w-[335px] text-sm lg:max-w-4xl">
-            <nav class="flex items-center justify-end gap-4">
-                <Link
-                    v-if="$page.props.auth.user"
-                    :href="route('dashboard')"
-                    class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
-                >
-                    Dashboard
-                </Link>
-                <template v-else>
-                    <Link
-                        :href="route('login')"
-                        class="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
-                    >
-                        Log in
+    <div class="min-h-screen flex flex-col bg-background text-foreground">
+        <!-- Modern Navbar -->
+        <header class="sticky top-0 z-10 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div class="container flex h-16 items-center justify-between px-4 md:px-6">
+                <div class="flex items-center gap-2">
+                    <Link :href="route('home')" class="flex items-center gap-2">
+                        <AppLogo class="h-8 w-8" />
                     </Link>
+                </div>
+                <nav class="flex items-center gap-4">
                     <Link
-                        :href="route('register')"
-                        class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
+                        v-if="$page.props.auth.user"
+                        :href="route('dashboard')"
+                        class="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                     >
-                        Register
+                        Dashboard
                     </Link>
-                </template>
-            </nav>
+                    <template v-else>
+                        <Link
+                            :href="route('login')"
+                            class="inline-flex h-9 items-center justify-center rounded-md border border-input bg-background px-4 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                        >
+                            Log in
+                        </Link>
+                        <Link
+                            :href="route('register')"
+                            class="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                        >
+                            Register
+                        </Link>
+                    </template>
+                </nav>
+            </div>
         </header>
-        <div class="duration-750 starting:opacity-0 flex w-full items-center justify-center opacity-100 transition-opacity lg:grow">
-            <main class="flex w-full max-w-[335px] flex-col-reverse overflow-hidden rounded-lg lg:max-w-4xl lg:flex-row">
 
-            </main>
-        </div>
-        <div class="h-14.5 hidden lg:block"></div>
+        <!-- Main Content -->
+        <main class="flex-1">
+            <section class="container px-4 py-12 md:px-6 md:py-24 lg:py-32">
+                <div class="mx-auto flex max-w-[980px] flex-col items-start gap-4">
+                    <h1 class="text-3xl font-bold leading-tight tracking-tighter md:text-5xl lg:text-6xl lg:leading-[1.1]">Ollama Manager</h1>
+                    <p class="max-w-[750px] text-lg text-muted-foreground sm:text-xl">A modern interface for managing your Ollama models and interactions.</p>
+                    <div class="flex flex-col gap-4 sm:flex-row">
+                        <Link
+                            v-if="$page.props.auth.user"
+                            :href="route('dashboard')"
+                            class="inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                        >
+                            Go to Dashboard
+                        </Link>
+                        <Link
+                            v-else
+                            :href="route('register')"
+                            class="inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                        >
+                            Get Started
+                        </Link>
+                    </div>
+                </div>
+            </section>
+        </main>
     </div>
 </template>
