@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\OllamaController;
+use App\Http\Controllers\StatusController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -14,7 +15,7 @@ Route::get('/', function () {
 
 Route::get('/dashboard', [OllamaController::class, 'index'])->name('dashboard');
 
-
+Route::get('/status', [StatusController::class, 'index'])->name('status');
 
 
 
