@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\OllamaController;
 use App\Http\Controllers\StatusController;
+use App\Http\Controllers\ModelManagementController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -17,6 +18,7 @@ Route::get('/dashboard', [OllamaController::class, 'index'])->name('dashboard');
 
 Route::get('/status', [StatusController::class, 'index'])->name('status');
 
+Route::get('/model-management', [ModelManagementController::class, 'index'])->name('model-management');
 
 
 require __DIR__.'/settings.php';
