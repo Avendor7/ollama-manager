@@ -1,8 +1,3 @@
-<script setup lang="ts">
-import { Head, Link } from '@inertiajs/vue3';
-import AppLogo from '@/components/AppLogo.vue';
-</script>
-
 <template>
     <Head title="Welcome">
         <link rel="preconnect" href="https://rsms.me/" />
@@ -19,7 +14,7 @@ import AppLogo from '@/components/AppLogo.vue';
                 </div>
                 <nav class="flex items-center gap-4">
                     <Link
-                        v-if="$page.props.auth.user"
+                        v-if="user"
                         :href="route('dashboard')"
                         class="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                     >
@@ -52,7 +47,7 @@ import AppLogo from '@/components/AppLogo.vue';
                     <p class="max-w-[750px] text-lg text-muted-foreground sm:text-xl">A modern interface for managing your Ollama models and interactions.</p>
                     <div class="flex flex-col gap-4 sm:flex-row">
                         <Link
-                            v-if="$page.props.auth.user"
+                            v-if="user"
                             :href="route('dashboard')"
                             class="inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                         >
@@ -71,3 +66,11 @@ import AppLogo from '@/components/AppLogo.vue';
         </main>
     </div>
 </template>
+
+<script setup lang="ts">
+import { Head, Link, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
+const page = usePage();
+const user = computed(() => page.props.auth.user)
+import AppLogo from '@/components/AppLogo.vue';
+</script>
