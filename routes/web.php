@@ -14,7 +14,7 @@ Route::get('/', function () {
 //    return Inertia::render('Dashboard');
 //})->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/dashboard', [OllamaController::class, 'index'])->name('dashboard');
+Route::get('/dashboard', [OllamaController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/status', [StatusController::class, 'index'])->name('status');
 
