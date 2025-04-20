@@ -9,11 +9,13 @@ class OllamaController extends Controller
 {
     public function index()
     {
+        /*
         $client = Ollama::client();
 
         $response = $client->models()->list();
 
         \Log::debug(json_encode($response));
+        */
         return Inertia::render('Dashboard');
     }
 }
