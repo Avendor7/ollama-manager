@@ -9,7 +9,7 @@ class StatusController extends Controller
 {
     public function index()
     {
-        $client = Ollama::client('http://192.168.5.220:11434');
+        $client = Ollama::client(config('app.ollama_api_endpoint'));
         $response = $client->models()->runningList();
 
 
