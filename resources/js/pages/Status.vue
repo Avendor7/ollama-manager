@@ -11,8 +11,10 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+import { RunningData } from '@/types/RunningModel';
+
 const props = defineProps<{
-    running: object;
+    running: RunningData;
 }>();
 </script>
 
@@ -25,7 +27,12 @@ const props = defineProps<{
                 <PlaceholderPattern />
                 <div class="absolute inset-0 flex items-center justify-center gap-4">
                     <h1 class="text-2xl font-bold">Status Page</h1>
-                    <span>Running models: {{ props.running.models }}</span>
+                    <ul v-if="props.running.models.length > 0">
+                        <li v-for="(model, index) in props.running.models" :key="index">
+                            {{ model.name }} ({{ model.model }})
+                        </li>
+                    </ul>
+                    <span v-else>No running models.</span>
                 </div>
             </div>
         </div>
