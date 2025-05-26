@@ -2,7 +2,6 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
-import PlaceholderPattern from '../components/PlaceholderPattern.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -24,13 +23,12 @@ const props = defineProps<{
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
             <div class="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 rounded-xl border md:min-h-min">
-                <PlaceholderPattern />
                 <div class="absolute inset-0 p-6">
                     <div class="mx-auto max-w-7xl">
                         <h1 class="mb-8 text-3xl font-bold tracking-tight">Running Models</h1>
-                        
+
                         <div v-if="props.running.models.length > 0" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                            <div v-for="(model, index) in props.running.models" 
+                            <div v-for="(model, index) in props.running.models"
                                  :key="index"
                                  class="group relative overflow-hidden rounded-lg border bg-card p-6 shadow-sm transition-all hover:shadow-md">
                                 <div class="flex flex-col gap-4">
@@ -71,7 +69,7 @@ const props = defineProps<{
 
                                     <!-- Footer -->
                                     <div class="mt-2 flex flex-wrap gap-2">
-                                        <span v-for="family in model.details.families" 
+                                        <span v-for="family in model.details.families"
                                               :key="family"
                                               class="rounded-full bg-primary/20 px-2.5 py-1 text-xs font-medium text-white">
                                             {{ family }}
@@ -85,7 +83,7 @@ const props = defineProps<{
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div v-else class="flex h-[200px] items-center justify-center rounded-lg border border-dashed">
                             <p class="text-muted-foreground">No running models</p>
                         </div>
