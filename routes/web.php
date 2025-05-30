@@ -16,6 +16,8 @@ Route::get('/', function () {
 
 Route::get('/dashboard', [OllamaController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::post('/api/ollama/chat', [OllamaController::class, 'chat'])->middleware(['auth', 'verified']);
+
 Route::get('/status', [StatusController::class, 'index'])->name('status');
 
 Route::get('/model-management', [ModelManagementController::class, 'index'])->name('model-management');
