@@ -3,7 +3,7 @@ import { ref, nextTick, onMounted } from 'vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
-import { sendOllamaMessage } from '../lib/ollamaApi';
+import { sendOllamaMessage } from '@/lib/ollamaApi';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
