@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 use Inertia\Inertia;
 use ArdaGnsrn\Ollama\Ollama;
-use Prism\Prism\Prism;
 
 class OllamaController extends Controller
 {
@@ -17,22 +16,6 @@ class OllamaController extends Controller
         //Log::debug(json_encode($response));
         return Inertia::render('Dashboard');
     }
-
-
-    public function prismChat(Request $request){
-
-        return response()->eventStream(function () {
-            $stream = Prism::text()
-                ->using('ollama', 'qwen2.5:14b')
-                ->withPrompt('Explain quantum computing step by step.')
-                ->asStream();
-
-            foreach ($stream as $response) {
-                yield $response->text;
-            }
-        });
-    }
-
 
     public function chat(Request $request)
     {
