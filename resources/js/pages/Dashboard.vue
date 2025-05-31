@@ -5,8 +5,9 @@ import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import { sendOllamaMessage } from '@/lib/ollamaApi';
 import { useEventStream } from "@laravel/stream-vue";
+import { sendPrismOllamaMessage } from '@/lib/prismApi';
 
-const { message } = useEventStream("/chat");
+const { message } = useEventStream("/api/prism/chat");
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
@@ -40,7 +41,7 @@ async function sendMessage() {
     loading.value = true;
     scrollToBottom();
     try {
-        const response = await sendOllamaMessage(input.value, messages.value.filter(m => m.role !== 'system'));
+        const response = await sendPrismOllamaMessage(input.value, messages.value.filter(m => m.role !== 'system'));
         messages.value.push({ role: 'assistant', content: response.response });
         input.value = '';
         scrollToBottom();
@@ -50,6 +51,19 @@ async function sendMessage() {
         loading.value = false;
         scrollToBottom();
     }
+
+
+    // try {
+    //     const response = await sendOllamaMessage(input.value, messages.value.filter(m => m.role !== 'system'));
+    //     messages.value.push({ role: 'assistant', content: response.response });
+    //     input.value = '';
+    //     scrollToBottom();
+    // } catch (e: any) {
+    //     error.value = e.message || 'Something went wrong.';
+    // } finally {
+    //     loading.value = false;
+    //     scrollToBottom();
+    // }
 }
 
 function handleKey(e: KeyboardEvent) {
