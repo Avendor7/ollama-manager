@@ -9,3 +9,4 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('/ollama/chat', [OllamaController::class, 'chat'])->middleware(['auth', 'verified']);
+Route::get('/prism/chat', [OllamaController::class, 'prismChat'])->middleware(['auth', 'verified']);
