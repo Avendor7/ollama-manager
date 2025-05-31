@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\AIStreamController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\OllamaController;
@@ -16,7 +15,7 @@ Route::get('/', function () {
 //})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/dashboard', [OllamaController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
-Route::get('/aistream', [AistreamController::class, 'index'])->middleware(['auth', 'verified'])->name('aistream');
+
 
 Route::get('/status', [StatusController::class, 'index'])->name('status');
 
