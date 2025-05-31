@@ -8,4 +8,4 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::post('/ollama/chat', [OllamaController::class, 'chat'])->middleware(['auth', 'verified']);
+Route::post('/ollama/chat', [OllamaController::class, 'handleChatStream']);
