@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Request;
 use Inertia\Inertia;
 use ArdaGnsrn\Ollama\Ollama;
 
@@ -16,7 +17,7 @@ class OllamaController extends Controller
         return Inertia::render('Dashboard');
     }
 
-    public function chat(\Illuminate\Http\Request $request)
+    public function chat(Request $request)
     {
         $data = $request->validate([
             'message' => 'required|string',
