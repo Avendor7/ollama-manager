@@ -14,7 +14,7 @@
             <div class="flex items-end gap-2">
               <div class="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-blue-600 flex items-center justify-center text-white font-bold text-lg">O</div>
               <div class="max-w-[70%] bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-xl px-4 py-2 shadow-md whitespace-pre-line">
-                {{ data }}
+                {{ msg.content }}
               </div>
             </div>
           </div>
@@ -42,7 +42,7 @@
           class="flex-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
         />
         <button
-          @click="sendMessageStream"
+          @click="sendMessage"
           :disabled="loading || !input.trim()"
           class="bg-blue-500 hover:bg-blue-600 text-white rounded-lg px-4 py-2 font-semibold shadow transition disabled:opacity-60"
         >
@@ -76,11 +76,6 @@ const error = ref('');
 const chatScroll = ref<HTMLElement | null>(null);
 const { data, isFetching, isStreaming, send } = useStream("/api/ollama/chat");
 
-const sendMessageStream = () => {
-    send({
-        prompt: input.value,
-    });
-};
 function scrollToBottom() {
     nextTick(() => {
         if (chatScroll.value) {
@@ -99,13 +94,16 @@ async function sendMessage() {
     loading.value = true;
     scrollToBottom();
     try {
-        //const response = await sendOllamaMessage(input.value, messages.value.filter(m => m.role !== 'system'));
-        messages.value.push({ role: 'assistant', content: response.response });
+        send({
+            prompt: input.value,
+        });
+
         input.value = '';
         scrollToBottom();
     } catch (e: any) {
         error.value = e.message || 'Something went wrong.';
     } finally {
+        messages.value.push({ role: 'assistant', content: data.value });
         loading.value = false;
         scrollToBottom();
     }

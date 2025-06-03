@@ -21,9 +21,13 @@ class OllamaController extends Controller
 
     public function handleChatStream(Request $request): StreamedResponse
     {
+        
         return response()->stream(function () use ($request): Generator {
             $stream = Prism::text()
                 ->using('ollama', 'llama3.1:8b')
+                ->withMessages([
+
+                ])
                 ->withPrompt($request->input("prompt"))
                 ->asStream();
 
