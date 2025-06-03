@@ -29,4 +29,9 @@ class Message extends Model
             'metadata' => 'array',
         ];
     }
+
+    public function user(): BelongsTo
+    {
+        return $this->chatSession->user();
+    }
 }

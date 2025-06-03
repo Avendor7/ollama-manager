@@ -9,10 +9,12 @@ return new class extends Migration {
     {
         Schema::create('chat_sessions', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->foreignId('user_id');
-            $table->boolean('is_active');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');;
+            $table->string('title')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
+
+            $table->index(['user_id', 'created_at']);
         });
     }
 

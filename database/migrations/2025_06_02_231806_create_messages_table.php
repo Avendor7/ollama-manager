@@ -9,12 +9,14 @@ return new class extends Migration {
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('chat_session_id');
+            $table->foreignId('chat_session_id')->constrained()->onDelete('cascade');
             $table->longText('content');
-            $table->string('role');
+            $table->enum('role', ['user', 'assistant']);
             $table->integer('token_count')->nullable();
-            $table->json('metadata');
+            $table->json('metadata')->nullable();
             $table->timestamps();
+
+            $table->index(['chat_session_id', 'created_at']);
         });
     }
 
