@@ -1,7 +1,24 @@
 <template>
   <Head title="Dashboard" />
   <AppLayout :breadcrumbs="breadcrumbs">
+    <!-- User Info -->
+    <div v-if="props.user" class="bg-gradient-to-r from-blue-500 to-purple-500 p-2 text-white text-xs text-right">
+      <span>Logged in as: {{ props.user.name }}</span>
+    </div>
     <div class="flex h-full flex-1 flex-col bg-white dark:bg-zinc-900 overflow-hidden">
+      <!-- Previous Chats Sidebar (if needed) -->
+      <div v-if="props.previousChats.length > 0" class="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 p-4">
+        <h3 class="text-sm font-medium mb-2">Previous Conversations</h3>
+        <div class="flex flex-wrap gap-2">
+          <button
+            v-for="(chat, index) in props.previousChats"
+            :key="index"
+            class="text-xs bg-zinc-200 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 px-3 py-1 rounded-full hover:bg-zinc-300 dark:hover:bg-zinc-700 transition"
+          >
+            {{ chat }}
+          </button>
+        </div>
+      </div>
       <!-- Chat Messages -->
       <div ref="chatScroll" class="flex-1 overflow-y-auto px-6 py-4 space-y-6 bg-zinc-50 dark:bg-zinc-900" id="chat-scroll">
         <template v-for="(msg, idx) in messages" :key="idx">
@@ -60,6 +77,25 @@ import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import { useStream } from "@laravel/stream-vue"
 
+interface MessageType {
+  id?: number;
+  chat_session_id?: number;
+  content: string;
+  role: string;
+  token_count?: number;
+  metadata?: any;
+  created_at?: string;
+  updated_at?: string;
+}
+
+interface Props {
+  user: any;
+  messages: MessageType[];
+  previousChats: string[];
+}
+
+const props = defineProps<Props>();
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
@@ -67,9 +103,10 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const messages = ref([
-    { role: 'assistant', content: 'Of course! What do you need help with today?' },
-]);
+const messages = ref<MessageType[]>(props.messages.length > 0 ?
+  props.messages :
+  [{ role: 'assistant', content: 'Of course! What do you need help with today?' }]
+);
 const input = ref('');
 const loading = ref(false);
 const error = ref('');
@@ -89,7 +126,7 @@ onMounted(scrollToBottom);
 async function sendMessage() {
     if (!input.value.trim() || loading.value) return;
     error.value = '';
-    const userMsg = { role: 'user', content: input.value };
+    const userMsg: MessageType = { role: 'user', content: input.value };
     messages.value.push(userMsg);
     loading.value = true;
     scrollToBottom();
@@ -103,7 +140,8 @@ async function sendMessage() {
     } catch (e: any) {
         error.value = e.message || 'Something went wrong.';
     } finally {
-        messages.value.push({ role: 'assistant', content: data.value });
+        const assistantMsg: MessageType = { role: 'assistant', content: data.value };
+        messages.value.push(assistantMsg);
         loading.value = false;
         scrollToBottom();
     }
