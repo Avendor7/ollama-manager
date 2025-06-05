@@ -1,10 +1,6 @@
 <template>
   <Head title="Dashboard" />
   <AppLayout :breadcrumbs="breadcrumbs">
-    <!-- User Info -->
-    <div v-if="props.user" class="bg-gradient-to-r from-blue-500 to-purple-500 p-2 text-white text-xs text-right">
-      <span>Logged in as: {{ props.user.name }}</span>
-    </div>
     <div class="flex h-full flex-1 flex-col bg-white dark:bg-zinc-900 overflow-hidden">
       <!-- Previous Chats Sidebar (if needed) -->
       <div v-if="props.previousChats.length > 0" class="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 p-4">
