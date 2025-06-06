@@ -32,20 +32,27 @@
       <div class="flex-1 flex flex-col">
         <!-- Chat Messages -->
         <div ref="chatScroll" class="flex-1 overflow-y-auto px-6 py-4 space-y-6 bg-zinc-50 dark:bg-zinc-900" id="chat-scroll">
-          <template v-for="(msg, idx) in messages" :key="idx">
+          <template v-for="(msg, idx) in chatMessages" :key="idx">
             <div v-if="msg.role === 'user'" class="flex justify-end">
               <div class="max-w-[70%] bg-blue-500 text-white rounded-xl px-4 py-2 shadow-md whitespace-pre-line">
                 {{ msg.content }}
               </div>
             </div>
-            <div v-else class="flex justify-start">
+
+              <div v-else class="flex justify-start">
               <div class="flex items-end gap-2">
                 <div class="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-blue-600 flex items-center justify-center text-white font-bold text-lg">O</div>
                 <div class="max-w-[70%] bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-xl px-4 py-2 shadow-md whitespace-pre-line">
-                  {{ data }}
+                    <div v-if="isStreaming">
+                        {{data}}
+                    </div>
+                    <div v-else>
+                        {{ msg.content }}
+                    </div>
                 </div>
               </div>
             </div>
+
           </template>
           <div v-if="loading" class="flex justify-start animate-pulse">
             <div class="flex items-end gap-2">
@@ -126,16 +133,16 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const messages = ref<MessageType[]>([]);
+const chatMessages = ref<MessageType[]>([]);
 const input = ref('');
 const loading = ref(false);
 const error = ref('');
 const chatScroll = ref<HTMLElement | null>(null);
 const { data, isFetching, isStreaming, send } = useStream("/api/ollama/chat");
 
-// Watch for changes in props.messages and update the local messages ref
+// Watch for changes in props.messages and update the local chatMessages ref
 watch(() => props.messages, (newMessages) => {
-    messages.value = newMessages.length > 0 ?
+    chatMessages.value = newMessages.length > 0 ?
         newMessages :
         [{ role: 'assistant', content: 'Hello! How can I help you today?' }];
     scrollToBottom();
@@ -155,7 +162,7 @@ async function sendMessage() {
     if (!input.value.trim() || loading.value) return;
     error.value = '';
     const userMsg: MessageType = { role: 'user', content: input.value };
-    messages.value.push(userMsg);
+    chatMessages.value.push(userMsg);
     loading.value = true;
     scrollToBottom();
     try {
@@ -170,7 +177,7 @@ async function sendMessage() {
         error.value = e.message || 'Something went wrong.';
     } finally {
         const assistantMsg: MessageType = { role: 'assistant', content: data.value };
-        messages.value.push(assistantMsg);
+        chatMessages.value.push(assistantMsg);
         loading.value = false;
         scrollToBottom();
     }
