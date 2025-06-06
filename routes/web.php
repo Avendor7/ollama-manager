@@ -17,7 +17,7 @@ Route::get('/', function () {
 //})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/dashboard', [OllamaController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
-
+Route::post('/dashboard/new-chat', [OllamaController::class, 'createNewChat'])->middleware(['auth', 'verified'])->name('dashboard.new-chat');
 
 Route::get('/status', [StatusController::class, 'index'])->name('status');
 
