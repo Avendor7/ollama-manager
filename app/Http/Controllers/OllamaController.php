@@ -10,6 +10,7 @@ use App\Models\ChatSession;
 use Generator;
 use Prism\Prism\Prism;
 use Prism\Prism\ValueObjects\Messages\UserMessage;
+use Prism\Prism\ValueObjects\Messages\AssistantMessage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class OllamaController extends Controller
@@ -96,21 +97,15 @@ class OllamaController extends Controller
             'role' => 'user',
         ]);
 
-
-        \Log::debug(
-            ...$chatSession->messages()
-            ->orderBy('created_at')
-            ->get()
-            ->map(fn($msg) => [
-                'role' => $msg->role,
-                'content' => $msg->content,
-            ])
-            ->toArray());
-
         return response()->stream(function () use ($request, $chatSession): Generator {
             $stream = Prism::text()
-                ->using('ollama', 'llama3.1:8b')
+                ->using('ollama', 'llama3.2:1b')
                 ->withMessages([
+                    ...$chatSession->messages()
+                        ->orderBy('created_at')
+                        ->get()
+                        ->map(fn($msg) => $msg->role === 'user' ? new UserMessage($msg->content) : new AssistantMessage($msg->content))
+                        ->toArray(),
                     new UserMessage($request->input('prompt')),
                 ])
                 ->asStream();
