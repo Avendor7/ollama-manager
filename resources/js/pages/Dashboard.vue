@@ -7,10 +7,10 @@
         <div class="flex justify-between items-center mb-4">
           <h3 class="text-sm font-medium">Chat Sessions</h3>
           <Link
-            :href="route('dashboard.new-chat')"
-            method="post"
-            as="button"
-            class="text-xs bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-full transition"
+              :href="route('dashboard.new-chat')"
+              as="button"
+              class="text-xs bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-full transition"
+              method="post"
           >
             New Chat
           </Link>
@@ -29,9 +29,9 @@
       </div>
 
       <!-- Main Chat Area -->
-      <div class="flex-1 flex flex-col">
+      <div class="flex-1 flex flex-col h-full">
         <!-- Chat Messages -->
-        <div ref="chatScroll" class="flex-1 overflow-y-auto px-6 py-4 space-y-6 bg-zinc-50 dark:bg-zinc-900" id="chat-scroll">
+        <div ref="chatScroll" class="overflow-y-auto px-6 py-4 space-y-6 bg-zinc-50 dark:bg-zinc-900 h-[calc(100vh-180px)]" id="chat-scroll">
           <template v-for="(msg, idx) in chatMessages" :key="idx">
             <div v-if="msg.role === 'user'" class="flex justify-end">
               <div class="max-w-[70%] bg-blue-500 text-white rounded-xl px-4 py-2 shadow-md whitespace-pre-line">
@@ -56,21 +56,21 @@
               </div>
             </div>
           </div>
-        <div v-if="showData" class="flex justify-start">
+          <div v-if="showData" class="flex justify-start">
             <div class="flex items-end gap-2">
-                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-blue-600 flex items-center justify-center text-white font-bold text-lg">O</div>
-                <div  class="max-w-[70%] bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-xl px-4 py-2 shadow-md whitespace-pre-line">
-                    {{ data }}
-                </div>
+              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-blue-600 flex items-center justify-center text-white font-bold text-lg">O</div>
+              <div class="max-w-[70%] bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-xl px-4 py-2 shadow-md whitespace-pre-line">
+                {{ data }}
+              </div>
             </div>
-        </div>
-        <div v-if="error" class="text-red-500 px-2 text-sm">{{ error }}</div>
-        <div v-if="isFetching">Connecting...</div>
-        <div v-if="isStreaming">Generating...</div>
+          </div>
+          <div v-if="error" class="text-red-500 px-2 text-sm">{{ error }}</div>
+          <div v-if="isFetching">Connecting...</div>
+          <div v-if="isStreaming">Generating...</div>
         </div>
 
         <!-- Chat Input -->
-        <div class="border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-3 flex items-center gap-2">
+        <div class="border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-3 flex items-center gap-2 sticky bottom-0 w-full">
           <input
             v-model="input"
             :disabled="loading"
