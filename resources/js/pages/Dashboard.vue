@@ -38,17 +38,11 @@
                 {{ msg.content }}
               </div>
             </div>
-
-              <div v-else class="flex justify-start">
+            <div v-else class="flex justify-start">
               <div class="flex items-end gap-2">
                 <div class="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-blue-600 flex items-center justify-center text-white font-bold text-lg">O</div>
                 <div class="max-w-[70%] bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-xl px-4 py-2 shadow-md whitespace-pre-line">
-                    <div v-if="isStreaming">
-                        {{data}}
-                    </div>
-                    <div v-else>
-                        {{ msg.content }}
-                    </div>
+                    {{ msg.content }}
                 </div>
               </div>
             </div>
@@ -62,9 +56,17 @@
               </div>
             </div>
           </div>
-          <div v-if="error" class="text-red-500 px-2 text-sm">{{ error }}</div>
-          <div v-if="isFetching">Connecting...</div>
-          <div v-if="isStreaming">Generating...</div>
+        <div v-if="showData" class="flex justify-start">
+            <div class="flex items-end gap-2">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-blue-600 flex items-center justify-center text-white font-bold text-lg">O</div>
+                <div  class="max-w-[70%] bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-xl px-4 py-2 shadow-md whitespace-pre-line">
+                    {{ data }}
+                </div>
+            </div>
+        </div>
+        <div v-if="error" class="text-red-500 px-2 text-sm">{{ error }}</div>
+        <div v-if="isFetching">Connecting...</div>
+        <div v-if="isStreaming">Generating...</div>
         </div>
 
         <!-- Chat Input -->
@@ -138,7 +140,20 @@ const input = ref('');
 const loading = ref(false);
 const error = ref('');
 const chatScroll = ref<HTMLElement | null>(null);
-const { data, isFetching, isStreaming, send } = useStream("/api/ollama/chat");
+const showData = ref(false);
+const { data, isFetching, isStreaming, send } = useStream("/api/ollama/chat",{
+    onData: (data: any) => {
+        console.log(data);
+        showData.value = true;
+    },
+    onFinish: () => {
+        const assistantMsg: MessageType = { role: 'assistant', content: data.value };
+        console.log(data.value);
+        showData.value = false;
+        chatMessages.value.push(assistantMsg);
+
+    }
+});
 
 // Watch for changes in props.messages and update the local chatMessages ref
 watch(() => props.messages, (newMessages) => {
@@ -170,14 +185,12 @@ async function sendMessage() {
             prompt: input.value,
             chat_session_id: props.currentChatId,
         });
-        console.log(data.value);
         input.value = '';
         scrollToBottom();
     } catch (e: any) {
         error.value = e.message || 'Something went wrong.';
     } finally {
-        const assistantMsg: MessageType = { role: 'assistant', content: data.value };
-        chatMessages.value.push(assistantMsg);
+
         loading.value = false;
         scrollToBottom();
     }
