@@ -1,30 +1,12 @@
 <script setup lang="ts">
 import NavFooter from '@/components/NavFooter.vue';
-import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { Activity, BookOpen, Folder, LayoutGrid, Database } from 'lucide-vue-next';
+import { BookOpen, Folder } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
-
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Status',
-        href: '/status',
-        icon: Activity,
-    },
-    {
-        title: 'Model Management',
-        href: '/model-management',
-        icon: Database,
-    },
-];
+import ChatSessions from '@/components/ChatSessions.vue';
 
 const footerNavItems: NavItem[] = [
     {
@@ -55,7 +37,7 @@ const footerNavItems: NavItem[] = [
         </SidebarHeader>
 
         <SidebarContent>
-            <NavMain :items="mainNavItems" />
+            <ChatSessions />
         </SidebarContent>
 
         <SidebarFooter>
