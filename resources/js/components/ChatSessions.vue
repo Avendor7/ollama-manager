@@ -1,5 +1,5 @@
 <template>
-    <div class="w-64 border-r border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 p-4 flex flex-col">
+    <div class="h-full px-2 py-0">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-sm font-medium">Chat Sessions</h3>
             <button
