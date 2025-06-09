@@ -2,7 +2,7 @@
     <div class="h-full px-2 py-0">
         <div class="mb-4 flex items-center justify-between">
             <h3 class="text-sm font-bold">Chats</h3>
-            <button @click="createNewChat" class="flex h-8 w-8 items-center justify-center rounded-full">
+            <button @click="createNewChat" class="flex h-7 w-7 hover:bg-zinc-200 dark:hover:bg-zinc-800 items-center justify-center rounded-lg">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-4 w-4"
