@@ -3,7 +3,7 @@
   <AppLayout :breadcrumbs="breadcrumbs" :chat-sessions="chatSessions"
              :current-chat-id="currentChatId"
   >
-    <div class="flex h-full flex-1 bg-white dark:bg-zinc-900 overflow-hidden">
+    <div class="flex h-full flex-1 bg-white dark:bg-zinc-900 overflow-hidden rounded-b-2xl">
       <!-- Main Chat Area -->
       <div class="flex-1 flex flex-col h-full">
         <!-- Chat Messages -->
