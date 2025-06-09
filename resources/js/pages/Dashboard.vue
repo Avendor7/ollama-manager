@@ -7,7 +7,7 @@
       <!-- Main Chat Area -->
       <div class="flex-1 flex flex-col h-full">
         <!-- Chat Messages -->
-        <div ref="chatScroll" class="overflow-y-auto px-6 py-4 space-y-6 bg-zinc-50 dark:bg-zinc-900 h-[calc(100vh-180px)]" id="chat-scroll">
+        <div ref="chatScroll" class="overflow-y-auto px-6 py-4 space-y-6 bg-zinc-50 dark:bg-zinc-900 h-[calc(100vh-145px)]" id="chat-scroll">
           <template v-for="(msg, idx) in chatMessages" :key="idx">
             <div v-if="msg.role === 'user'" class="flex justify-end">
               <div class="max-w-[70%] bg-blue-500 text-white rounded-xl px-4 py-2 shadow-md whitespace-pre-line">
@@ -46,7 +46,7 @@
         </div>
 
         <!-- Chat Input -->
-        <div class="border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-3 flex items-center gap-2 sticky bottom-0 w-full">
+        <div class="border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-3 flex items-center gap-2 w-full">
           <input
             v-model="input"
             :disabled="loading"
