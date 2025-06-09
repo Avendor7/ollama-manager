@@ -1,31 +1,51 @@
 <template>
     <div class="h-full px-2 py-0">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-sm font-medium">Chat Sessions</h3>
-            <button
-                @click="createNewChat"
-                class="text-xs bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-full transition"
-            >
-                New Chat
+        <div class="mb-4 flex items-center justify-between">
+            <h3 class="text-sm font-bold">Chats</h3>
+            <button @click="createNewChat" class="flex h-8 w-8 items-center justify-center rounded-full">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-4 w-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
             </button>
         </div>
-        <div class="flex-1 overflow-y-auto space-y-2">
+        <div class="flex-1  overflow-y-auto">
             <Link
                 v-for="chat in chatSessions"
                 :key="chat.id"
                 :href="route('dashboard', { chat_id: chat.id })"
-                class="block text-sm p-2 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800 transition"
+                class="flex items-center rounded-lg p-2 text-sm transition hover:bg-zinc-200 dark:hover:bg-zinc-800"
                 :class="{ 'bg-zinc-200 dark:bg-zinc-800': chat.id === currentChatId }"
             >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="mr-2 h-4 w-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z" />
+                </svg>
                 {{ chat.title || 'New Chat' }}
             </Link>
         </div>
     </div>
 </template>
 <script setup lang="ts">
-
 import { Link, router } from '@inertiajs/vue3';
-import {inject} from 'vue';
+import { inject } from 'vue';
 interface ChatSession {
     id: number;
     title: string;
@@ -37,12 +57,14 @@ const chatSessions = inject<ChatSession[]>('chatSessions', []);
 const currentChatId = inject<number>('currentChatId', 0);
 
 const createNewChat = () => {
-    router.post(route('dashboard.new-chat'), {}, {
-        preserveState: false,
-        preserveScroll: true,
-    });
+    router.post(
+        route('dashboard.new-chat'),
+        {},
+        {
+            preserveState: false,
+            preserveScroll: true,
+        },
+    );
 };
 </script>
-<style scoped>
-
-</style>
+<style scoped></style>
