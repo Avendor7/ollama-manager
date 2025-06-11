@@ -16,7 +16,14 @@ Route::get('/', function () {
 //    return Inertia::render('Dashboard');
 //})->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/dashboard', [OllamaController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+//Route::get('/dashboard', [OllamaController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [OllamaController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+    Route::delete('/dashboard/{chat}', [OllamaController::class, 'destroy'])->name('dashboard.destroy');
+});
+
+
 Route::post('/dashboard/new-chat', [OllamaController::class, 'createNewChat'])->middleware(['auth', 'verified'])->name('dashboard.new-chat');
 
 Route::get('/status', [StatusController::class, 'index'])->name('status');

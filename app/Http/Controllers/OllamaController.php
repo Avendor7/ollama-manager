@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\User;
@@ -15,6 +16,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class OllamaController extends Controller
 {
+    use AuthorizesRequests;
     public function index()
     {
         // Get the current user
@@ -84,6 +86,19 @@ class OllamaController extends Controller
                                         ->get(),
             'currentChatId' => $chatSession->id,
         ]);
+    }
+
+    /**
+     * @param Request $request
+     *
+     */
+    public function destroy(Request $request, ChatSession $chat){
+        //$this->authorize('delete', $chat);
+
+        $chat->delete();
+
+        return redirect()->route('dashboard');
+
     }
 
     public function handleChatStream(Request $request): StreamedResponse
