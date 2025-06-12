@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\ChatService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\User;
 use App\Models\Message;
 use App\Models\ChatSession;
 use Generator;
@@ -104,43 +104,16 @@ class OllamaController extends Controller
     public function handleChatStream(Request $request): StreamedResponse
     {
         $chatSession = ChatSession::findOrFail($request->input('chat_session_id'));
+        $prompt = $request->input('prompt');
 
-        // Save the user message
-        Message::create([
-            'chat_session_id' => $chatSession->id,
-            'content' => $request->input('prompt'),
-            'role' => 'user',
-        ]);
+        // Inject the ChatService
+        $chatService = app(ChatService::class);
 
-        return response()->stream(function () use ($request, $chatSession): Generator {
-            $stream = Prism::text()
-                ->using('ollama', 'llama3.2:1b')
-                ->withMessages([
-                    ...$chatSession->messages()
-                        ->orderBy('created_at')
-                        ->get()
-                        ->map(fn($msg) => $msg->role === 'user' ? new UserMessage($msg->content) : new AssistantMessage($msg->content))
-                        ->toArray(),
-                    new UserMessage($request->input('prompt')),
-                ])
-                ->asStream();
+        // Save the user message immediately
+        $chatService->saveUserMessage($chatSession, $prompt);
 
-            $fullResponse = '';
-            foreach ($stream as $response) {
-                $fullResponse .= $response->text;
-                yield $response->text;
-            }
-            // Save the assistant's response
-            Message::create([
-                'chat_session_id' => $chatSession->id,
-                'content' => $fullResponse,
-                'role' => 'assistant',
-            ]);
-
-            // Generate title if this is the first message
-            if ($chatSession->messages()->count() === 2) {
-                $chatSession->generateTitle();
-            }
+        return response()->stream(function () use ($chatService, $chatSession, $prompt) {
+            yield from $chatService->generateStreamResponse($chatSession, $prompt);
         }, status: 200, headers: [
             'Cache-Control' => 'no-cache',
             'Content-Type' => 'text/stream',
