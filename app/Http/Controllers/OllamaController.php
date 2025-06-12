@@ -4,14 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Services\ChatService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Message;
 use App\Models\ChatSession;
-use Generator;
-use Prism\Prism\Prism;
-use Prism\Prism\ValueObjects\Messages\UserMessage;
-use Prism\Prism\ValueObjects\Messages\AssistantMessage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class OllamaController extends Controller
@@ -70,7 +67,7 @@ class OllamaController extends Controller
             return response()->json(['message' => 'User not authenticated'], 401);
         }
 
-        // Create new chat session
+        // Create a new chat session
         $chatSession = ChatSession::create([
             'user_id' => $user->id,
             'title' => 'New Chat',
@@ -89,10 +86,10 @@ class OllamaController extends Controller
     }
 
     /**
-     * @param Request $request
-     *
+     * @param ChatSession $chat
+     * @return RedirectResponse
      */
-    public function destroy(Request $request, ChatSession $chat){
+    public function destroy(ChatSession $chat){
         //$this->authorize('delete', $chat);
 
         $chat->delete();
@@ -114,7 +111,7 @@ class OllamaController extends Controller
 
         return response()->stream(function () use ($chatService, $chatSession, $prompt) {
             yield from $chatService->generateStreamResponse($chatSession, $prompt);
-        }, status: 200, headers: [
+        }, headers: [
             'Cache-Control' => 'no-cache',
             'Content-Type' => 'text/stream',
             'X-Accel-Buffering' => 'no',

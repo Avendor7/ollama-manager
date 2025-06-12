@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Message extends Model
 {
@@ -30,8 +31,15 @@ class Message extends Model
         ];
     }
 
-    public function user(): BelongsTo
+    public function user(): HasOneThrough
     {
-        return $this->chatSession->user();
+        return $this->hasOneThrough(
+            User::class,
+            ChatSession::class,
+            'id',           // Foreign key on ChatSession table...
+            'id',           // Foreign key on Users table...
+            'chat_session_id',  // Local key on Message table...
+            'user_id'       // Local key on ChatSession table...
+        );
     }
 }
