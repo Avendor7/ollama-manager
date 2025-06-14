@@ -17,17 +17,20 @@ interface Props {
     breadcrumbs?: BreadcrumbItemType[];
     chatSessions?: ChatSession[];
     currentChatId?: number;
+    modelList?: any[];
 }
 
 const props = withDefaults(defineProps<Props>(), {
     breadcrumbs: () => [],
     chatSessions: () => [],
-    currentChatId: () => 0
+    currentChatId: () => 0,
+    modelList: () => [],
 });
 
 // Provide the chat sessions to all child components
 provide('chatSessions', props.chatSessions);
 provide('currentChatId', props.currentChatId);
+provide('modelList', props.modelList);
 </script>
 
 <template>
@@ -37,6 +40,6 @@ provide('currentChatId', props.currentChatId);
             <AppSidebarHeader :breadcrumbs="breadcrumbs" />
             <slot />
         </AppContent>
-        <ModelSidebar />
+        <ModelSidebar :model-list="modelList"/>
     </AppShell>
 </template>

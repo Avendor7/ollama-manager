@@ -10,10 +10,16 @@ use Inertia\Inertia;
 use App\Models\Message;
 use App\Models\ChatSession;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-
+use App\Services\OllamaService;
 class OllamaController extends Controller
 {
     use AuthorizesRequests;
+    public OllamaService $ollamaService;
+    public function __construct(OllamaService $ollamaService)
+    {
+        $this->ollamaService = $ollamaService;
+    }
+
     public function index()
     {
         // Get the current user
@@ -22,6 +28,8 @@ class OllamaController extends Controller
         if (!$user) {
             return response()->json(['message' => 'User not authenticated'], 401);
         }
+
+        $modelList = $this->ollamaService->getModelList();
 
         // Retrieve all chat sessions for the user
         $chatSessions = ChatSession::where('user_id', $user->id)
@@ -56,6 +64,7 @@ class OllamaController extends Controller
             'messages' => $messages,
             'chatSessions' => $chatSessions,
             'currentChatId' => $currentChatSession?->id,
+            'modelList' => $modelList,
         ]);
     }
 
@@ -74,6 +83,9 @@ class OllamaController extends Controller
             'is_active' => true,
         ]);
 
+        // Get the model list
+        $modelList = $this->ollamaService->getModelList();
+
         // Return a fresh state with empty messages
         return Inertia::render('Dashboard', [
             'user' => $user,
@@ -82,6 +94,7 @@ class OllamaController extends Controller
                                         ->orderByDesc('created_at')
                                         ->get(),
             'currentChatId' => $chatSession->id,
+            'modelList' => $modelList,
         ]);
     }
 

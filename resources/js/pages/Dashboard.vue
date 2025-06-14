@@ -1,7 +1,7 @@
 <template>
   <Head title="Dashboard" />
   <AppLayout :breadcrumbs="breadcrumbs" :chat-sessions="chatSessions"
-             :current-chat-id="currentChatId"
+             :current-chat-id="currentChatId" :model-list="modelList"
   >
     <div class="flex h-full flex-1 bg-white dark:bg-zinc-900 overflow-hidden rounded-b-2xl">
       <!-- Main Chat Area -->
@@ -100,6 +100,7 @@ interface Props {
   messages: MessageType[];
   chatSessions: ChatSession[];
   currentChatId: number;
+  modelList?: any[];
 }
 
 const props = defineProps<Props>();
