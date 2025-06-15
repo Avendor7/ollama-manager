@@ -22,7 +22,6 @@ withDefaults(defineProps<Props>(), {
         :breadcrumbs="breadcrumbs"
         :chat-sessions="chatSessions"
         :current-chat-id="currentChatId"
-        :model-list="modelList"
     >
         <slot />
     </AppSidebarLayout>
