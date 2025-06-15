@@ -44,17 +44,18 @@
           <div v-if="isFetching">Connecting...</div>
           <div v-if="isStreaming">Generating...</div>
         </div>
-          <Popover>
-              <PopoverTrigger>
-                  Open popover
-              </PopoverTrigger>
-              <PopoverContent>
-                  Some popover content
-              </PopoverContent>
-          </Popover>
+
         <!-- Chat Input -->
         <div class="border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-3 flex items-center gap-2 w-full">
-          <input
+        <Popover >
+            <PopoverTrigger class="bg-blue-500 hover:bg-blue-600 text-white rounded-lg px-4 py-2 font-semibold shadow transition disabled:opacity-60">
+                Open popover
+            </PopoverTrigger>
+            <PopoverContent>
+                Some popover content
+            </PopoverContent>
+        </Popover>
+        <input
             v-model="input"
             :disabled="loading"
             @keydown="handleKey"
@@ -105,13 +106,31 @@ interface ChatSession {
     created_at: string;
     updated_at: string;
 }
-
+interface Model {
+    modelList: {
+        models: Array<{
+            name: string;
+            description?: string;
+            size: number;
+            modifiedAt: string;
+            digest: string;
+            details: {
+                format: string;
+                family: string;
+                parameterSize: string;
+                quantizationLevel: string;
+                families: string[];
+                parentModel: string;
+            };
+        }>;
+    };
+}
 interface Props {
   user: any;
   messages: MessageType[];
   chatSessions: ChatSession[];
   currentChatId: number;
-  modelList?: any[];
+  modelList?: Model[];
 }
 
 const props = defineProps<Props>();
