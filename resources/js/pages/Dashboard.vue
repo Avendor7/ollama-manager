@@ -44,7 +44,14 @@
           <div v-if="isFetching">Connecting...</div>
           <div v-if="isStreaming">Generating...</div>
         </div>
-
+          <Popover>
+              <PopoverTrigger>
+                  Open popover
+              </PopoverTrigger>
+              <PopoverContent>
+                  Some popover content
+              </PopoverContent>
+          </Popover>
         <!-- Chat Input -->
         <div class="border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-3 flex items-center gap-2 w-full">
           <input
@@ -75,7 +82,11 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import { useStream } from "@laravel/stream-vue"
-
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '@/components/ui/popover';
 interface MessageType {
   id?: number;
   chat_session_id?: number;
