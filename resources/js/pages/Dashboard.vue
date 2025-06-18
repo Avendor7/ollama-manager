@@ -1,7 +1,7 @@
 <template>
   <Head title="Dashboard" />
   <AppLayout :breadcrumbs="breadcrumbs" :chat-sessions="chatSessions"
-             :current-chat-id="currentChatId" :model-list="modelList"
+             :current-chat-id="currentChatId"
   >
     <div class="flex h-full flex-1 bg-white dark:bg-zinc-900 overflow-hidden rounded-b-2xl">
       <!-- Main Chat Area -->
@@ -52,15 +52,20 @@
                 Open popover
             </PopoverTrigger>
             <PopoverContent>
-                <div v-for="(model, index) in modelList.models" :key="index" class="border-b p-2 ">
-                    <h2 class="text-lg font-semibold">{{ model.name }}</h2>
-                    <p class="text-muted-foreground text-sm">{{ model.description }}</p>
-                    <p class="text-muted-foreground text-xs">Size: {{ (model.size / 1024 / 1024 / 1024).toFixed(2) }} GB</p>
-                    <div v-if="model.details">
-                        <p class="text-muted-foreground text-xs">Family: {{ model.details.family }}</p>
-                        <p class="text-muted-foreground text-xs">Parameter Size: {{ model.details.parameterSize }}</p>
-                        <p class="text-muted-foreground text-xs">Quantization: {{ model.details.quantizationLevel }}</p>
+                <div v-if="modelList && modelList.models && modelList.models.length > 0">
+                    <div v-for="(model, index) in modelList.models" :key="index" class="border-b p-2 ">
+                        <h2 class="text-lg font-semibold">{{ model.name }}</h2>
+                        <p v-if="model.description" class="text-muted-foreground text-sm">{{ model.description }}</p>
+                        <p class="text-muted-foreground text-xs">Size: {{ (model.size / 1024 / 1024 / 1024).toFixed(2) }} GB</p>
+                        <div v-if="model.details">
+                            <p class="text-muted-foreground text-xs">Family: {{ model.details.family }}</p>
+                            <p class="text-muted-foreground text-xs">Parameter Size: {{ model.details.parameterSize }}</p>
+                            <p class="text-muted-foreground text-xs">Quantization: {{ model.details.quantizationLevel }}</p>
+                        </div>
                     </div>
+                </div>
+                <div v-else class="p-2 text-center text-muted-foreground">
+                    No models available
                 </div>
             </PopoverContent>
         </Popover>
@@ -116,30 +121,31 @@ interface ChatSession {
     updated_at: string;
 }
 interface Model {
-    modelList: {
-        models: Array<{
-            name: string;
-            description?: string;
-            size: number;
-            modifiedAt: string;
-            digest: string;
-            details: {
-                format: string;
-                family: string;
-                parameterSize: string;
-                quantizationLevel: string;
-                families: string[];
-                parentModel: string;
-            };
-        }>;
+    name: string;
+    description?: string;
+    size: number;
+    modifiedAt: string;
+    digest: string;
+    details?: {
+        format: string;
+        family: string;
+        parameterSize: string;
+        quantizationLevel: string;
+        families: string[];
+        parentModel: string;
     };
 }
+
+interface ModelList {
+    models: Model[];
+}
+
 interface Props {
   user: any;
   messages: MessageType[];
   chatSessions: ChatSession[];
   currentChatId: number;
-  modelList?: Model[];
+  modelList?: ModelList;
 }
 
 const props = defineProps<Props>();
