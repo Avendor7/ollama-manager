@@ -47,28 +47,66 @@
 
         <!-- Chat Input -->
         <div class="border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-3 flex items-center gap-2 w-full">
-        <Popover >
-            <PopoverTrigger class="bg-blue-500 hover:bg-blue-600 text-white rounded-lg px-4 py-2 font-semibold shadow transition disabled:opacity-60">
-                Open popover
-            </PopoverTrigger>
-            <PopoverContent>
-                <div v-if="modelList && modelList.models && modelList.models.length > 0">
-                    <div v-for="(model, index) in modelList.models" :key="index" class="border-b p-2 ">
-                        <h2 class="text-lg font-semibold">{{ model.name }}</h2>
-                        <p v-if="model.description" class="text-muted-foreground text-sm">{{ model.description }}</p>
-                        <p class="text-muted-foreground text-xs">Size: {{ (model.size / 1024 / 1024 / 1024).toFixed(2) }} GB</p>
-                        <div v-if="model.details">
-                            <p class="text-muted-foreground text-xs">Family: {{ model.details.family }}</p>
-                            <p class="text-muted-foreground text-xs">Parameter Size: {{ model.details.parameterSize }}</p>
-                            <p class="text-muted-foreground text-xs">Quantization: {{ model.details.quantizationLevel }}</p>
+            <Popover>
+                <PopoverTrigger class="bg-blue-500 hover:bg-blue-600 text-white rounded-lg px-4 py-2 font-semibold shadow transition disabled:opacity-60">
+                    Open popover
+                </PopoverTrigger>
+                <PopoverContent class="w-96 max-h-96 overflow-hidden">
+                    <div v-if="modelList && modelList.models && modelList.models.length > 0">
+                        <!-- Sort Controls -->
+                        <div class="mb-3 flex gap-2">
+                            <select
+                                v-model="sortBy"
+                                class="text-xs border rounded px-2 py-1 bg-background"
+                            >
+                                <option value="name">Name</option>
+                                <option value="size">Size</option>
+                                <option value="family">Family</option>
+                                <option value="parameterSize">Parameters</option>
+                            </select>
+                            <button
+                                @click="toggleSortOrder"
+                                class="text-xs border rounded px-2 py-1 hover:bg-accent"
+                            >
+                                {{ sortOrder === 'asc' ? '↑' : '↓' }}
+                            </button>
+                        </div>
+
+                        <!-- Grid Container -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-80 overflow-y-auto pr-2">
+                            <div
+                                v-for="(model, index) in sortedModels"
+                                :key="index"
+                                class="border rounded-lg p-3 hover:bg-accent/50 transition-colors cursor-pointer"
+                            >
+                                <h2 class="text-sm font-semibold mb-1 truncate">{{ model.name }}</h2>
+                                <p v-if="model.description" class="text-muted-foreground text-xs mb-2 line-clamp-2">
+                                    {{ model.description }}
+                                </p>
+                                <div class="space-y-1">
+                                    <p class="text-muted-foreground text-xs">
+                                        <span class="font-medium">Size:</span> {{ formatSize(model.size) }}
+                                    </p>
+                                    <div v-if="model.details" class="space-y-1">
+                                        <p class="text-muted-foreground text-xs">
+                                            <span class="font-medium">Family:</span> {{ model.details.family }}
+                                        </p>
+                                        <p class="text-muted-foreground text-xs">
+                                            <span class="font-medium">Params:</span> {{ model.details.parameterSize }}
+                                        </p>
+                                        <p class="text-muted-foreground text-xs">
+                                            <span class="font-medium">Quant:</span> {{ model.details.quantizationLevel }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div v-else class="p-2 text-center text-muted-foreground">
-                    No models available
-                </div>
-            </PopoverContent>
-        </Popover>
+                    <div v-else class="p-4 text-center text-muted-foreground">
+                        No models available
+                    </div>
+                </PopoverContent>
+            </Popover>
         <input
             v-model="input"
             :disabled="loading"
@@ -92,7 +130,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, onMounted, watch, provide } from 'vue';
+import { ref, nextTick, onMounted, watch, provide, computed, Ref } from 'vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
@@ -225,5 +263,54 @@ function handleKey(e: KeyboardEvent) {
         e.preventDefault();
         sendMessage();
     }
+}
+type SortKey = 'name' | 'size' | 'family' | 'parameterSize'
+type SortOrder = 'asc' | 'desc'
+
+const sortBy: Ref<SortKey> = ref('name')
+const sortOrder: Ref<SortOrder> = ref('asc')
+
+const sortedModels = computed((): Model[] => {
+    if (!props.modelList?.models?.length) return []
+
+    return [...props.modelList.models].sort((a: Model, b: Model): number => {
+        let aVal: string | number
+        let bVal: string | number
+
+        switch (sortBy.value) {
+            case 'size':
+                aVal = a.size
+                bVal = b.size
+                break
+            case 'family':
+                aVal = a.details?.family || ''
+                bVal = b.details?.family || ''
+                break
+            case 'parameterSize':
+                aVal = a.details?.parameterSize || ''
+                bVal = b.details?.parameterSize || ''
+                break
+            default: // name
+                aVal = a.name
+                bVal = b.name
+        }
+
+        let result: number
+        if (typeof aVal === 'string') {
+            result = aVal.localeCompare(bVal as string)
+        } else {
+            result = aVal - (bVal as number)
+        }
+
+        return sortOrder.value === 'desc' ? -result : result
+    })
+})
+
+const toggleSortOrder = (): void => {
+    sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc'
+}
+
+const formatSize = (bytes: number): string => {
+    return (bytes / 1024 / 1024 / 1024).toFixed(2) + ' GB'
 }
 </script>
