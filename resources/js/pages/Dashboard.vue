@@ -47,11 +47,11 @@
 
         <!-- Chat Input -->
         <div class="border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-3 flex items-center gap-2 w-full">
-            <Popover>
+            <Popover >
                 <PopoverTrigger class="bg-blue-500 hover:bg-blue-600 text-white rounded-lg px-4 py-2 font-semibold shadow transition disabled:opacity-60">
                     Open popover
                 </PopoverTrigger>
-                <PopoverContent class="w-96 max-h-96 overflow-hidden">
+                <PopoverContent class="w-300 max-h-200 overflow-hidden" side="top" align="start">
                     <div v-if="modelList && modelList.models && modelList.models.length > 0">
                         <!-- Sort Controls -->
                         <div class="mb-3 flex gap-2">
@@ -73,7 +73,7 @@
                         </div>
 
                         <!-- Grid Container -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-80 overflow-y-auto pr-2">
+                        <div class="grid grid-cols-4 sm:grid-cols-4 gap-3 max-h-200 overflow-y-auto pr-2">
                             <div
                                 v-for="(model, index) in sortedModels"
                                 :key="index"
