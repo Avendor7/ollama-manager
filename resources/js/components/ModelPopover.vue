@@ -3,7 +3,7 @@
         <PopoverTrigger class="bg-blue-500 hover:bg-blue-600 text-white rounded-lg px-4 py-2 font-semibold shadow transition disabled:opacity-60">
             Open popover
         </PopoverTrigger>
-        <PopoverContent class="w-[60%] max-h-[80vh] overflow-hidden" side="top" align="start">
+        <PopoverContent class="w-[80%] max-h-[80vh] overflow-hidden" side="top" align="start">
             <div v-if="modelList && modelList.models && modelList.models.length > 0">
                 <!-- Sort Controls -->
                 <div class="mb-3 flex gap-2">
