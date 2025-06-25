@@ -15,4 +15,8 @@ class OllamaService
         return $client->models()->list();
     }
 
+    public function getRunningList(){
+        $client = Ollama::client(config('app.ollama_api_endpoint'));
+        return $client->models()->runningList();
+    }
 }

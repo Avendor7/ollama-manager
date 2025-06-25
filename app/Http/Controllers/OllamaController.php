@@ -30,7 +30,7 @@ class OllamaController extends Controller
         }
 
         $modelList = $this->ollamaService->getModelList();
-
+        $runningList = $this->ollamaService->getRunningList();
         // Retrieve all chat sessions for the user
         $chatSessions = ChatSession::where('user_id', $user->id)
                                     ->orderByDesc('created_at')
@@ -65,6 +65,7 @@ class OllamaController extends Controller
             'chatSessions' => $chatSessions,
             'currentChatId' => $currentChatSession?->id,
             'modelList' => $modelList,
+            'runningList' => $runningList,
         ]);
     }
 

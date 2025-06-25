@@ -77,6 +77,8 @@ import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import { useStream } from "@laravel/stream-vue";
 import ModelPopover from '@/components/ModelPopover.vue';
+import {type RunningData} from '@/types/RunningModel';
+
 interface MessageType {
   id?: number;
   chat_session_id?: number;
@@ -121,6 +123,7 @@ interface Props {
   chatSessions: ChatSession[];
   currentChatId: number;
   modelList?: ModelList;
+  runningList?: RunningData;
 }
 
 const props = defineProps<Props>();
@@ -171,7 +174,9 @@ function scrollToBottom() {
 }
 
 onMounted(scrollToBottom);
-
+onMounted(() => {
+    console.log(props.runningList);
+})
 async function sendMessage() {
     if (!input.value.trim() || loading.value) return;
     error.value = '';
