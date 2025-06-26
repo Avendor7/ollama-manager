@@ -7,7 +7,7 @@
       <!-- Main Chat Area -->
       <div class="flex-1 flex flex-col h-full">
         <!-- Chat Messages -->
-        <div ref="chatScroll" class="overflow-y-auto px-6 py-4 space-y-6 bg-zinc-50 dark:bg-zinc-900 h-[calc(100vh-145px)]" id="chat-scroll">
+        <div ref="chatScroll" class="overflow-y-auto px-6 py-4 space-y-6 bg-zinc-50 dark:bg-zinc-900 h-[calc(100vh-120px)]" id="chat-scroll">
           <template v-for="(msg, idx) in chatMessages" :key="idx">
             <div v-if="msg.role === 'user'" class="flex justify-end">
               <div class="max-w-[70%] bg-blue-500 text-white rounded-xl px-4 py-2 shadow-md whitespace-pre-line">
@@ -46,7 +46,7 @@
         </div>
 
         <!-- Chat Input -->
-        <div class="border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-3 flex items-center gap-2 w-full">
+        <div class="border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-3 flex items-center gap-2 w-full h-[80px]">
             <ModelPopover :modelList="modelList" />
         <input
             v-model="input"
@@ -62,7 +62,7 @@
             class="bg-blue-500 hover:bg-blue-600 text-white rounded-lg px-4 py-2 font-semibold shadow transition disabled:opacity-60"
           >
             <span v-if="!loading">Send</span>
-            <span v-else class="flex items-center gap-1"><svg class="animate-spin h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>Sending</span>
+            <span v-else class="flex items-center gap-1"><svg class="animate-spin h-4 w-4 mr-1" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>Sending</span>
           </button>
         </div>
       </div>
