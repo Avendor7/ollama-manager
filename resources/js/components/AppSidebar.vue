@@ -16,7 +16,7 @@ import ChatSessions from '@/components/ChatSessions.vue';
 </script>
 
 <template>
-    <Sidebar collapsible="icon" variant="inset">
+    <Sidebar collapsible="offcanvas" variant="inset">
         <SidebarHeader>
             <SidebarMenu>
                 <SidebarMenuItem>
