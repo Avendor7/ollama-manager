@@ -129,7 +129,7 @@ interface Props {
 const props = defineProps<Props>();
 provide('chatSessions', props.chatSessions);
 provide('currentChatId', props.currentChatId);
-
+provide('runningList', props.runningList);
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',

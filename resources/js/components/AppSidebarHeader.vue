@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { onMounted } from 'vue';
+import { inject } from 'vue';
 
+const runningList = inject('runningList', []);
+onMounted(() => {
+    console.log(runningList.models[0].name);
+})
 </script>
 
 <template>
@@ -10,5 +16,8 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
         <div class="flex items-center gap-2">
             <SidebarTrigger class="-ml-1" />
         </div>
+        <span>
+            {{runningList.models[0].name}}
+        </span>
     </header>
 </template>
