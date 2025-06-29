@@ -2,8 +2,9 @@
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { onMounted } from 'vue';
 import { inject } from 'vue';
+import {type RunningData} from '@types/RunningModel';
 
-const runningList = inject('runningList', []);
+const runningList = inject<RunningData>('runningList', []);
 onMounted(() => {
     console.log(runningList.models[0].name);
 })
@@ -17,7 +18,7 @@ onMounted(() => {
             <SidebarTrigger class="-ml-1" />
         </div>
         <span>
-            {{runningList.models[0].name}}
+            {{runningList.models?.[0]?.name}}
         </span>
     </header>
 </template>

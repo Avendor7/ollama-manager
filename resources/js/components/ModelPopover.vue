@@ -1,7 +1,7 @@
 <template>
     <Popover>
         <PopoverTrigger class="bg-blue-500 hover:bg-blue-600 text-white rounded-lg px-4 py-2 font-semibold shadow transition disabled:opacity-60">
-            Open popover
+            {{runningList.models?.[0]?.name}}
         </PopoverTrigger>
         <PopoverContent class="w-[80%] max-h-[80vh] overflow-hidden" side="top" align="start">
             <div v-if="modelList && modelList.models && modelList.models.length > 0">
@@ -75,6 +75,8 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from '@/components/ui/popover';
+import { inject } from 'vue';
+import {type RunningData} from '@types/RunningModel';
 
 interface Model {
     name: string;
@@ -99,6 +101,7 @@ interface ModelList {
 interface Props {
     modelList?: ModelList;
 }
+const runningList = inject<RunningData>('runningList', []);
 
 const props = defineProps<Props>();
 
