@@ -37,6 +37,7 @@
                             <div
                                 v-for="(model, index) in models"
                                 :key="index"
+                                @click="loadModel(model.name)"
                                 class="border rounded-lg p-3 hover:bg-accent/50 transition-colors cursor-pointer"
                             >
                                 <h2 class="text-sm font-semibold mb-1 truncate">{{ model.name }}</h2>
@@ -76,7 +77,8 @@ import {
     PopoverTrigger,
 } from '@/components/ui/popover';
 import { inject } from 'vue';
-import {type RunningData} from '@types/RunningModel';
+import {type RunningData} from '@/types/RunningModel';
+import { router } from '@inertiajs/vue3';
 
 interface Model {
     name: string;
@@ -174,6 +176,15 @@ const expandedFamilies = ref<ExpandedFamiliesType>({})
 
 function toggleFamily(family: string): void {
     expandedFamilies.value[family] = !expandedFamilies.value[family]
+}
+
+function loadModel(modelName: string): void {
+    router.post('/load-model', {
+        model: modelName,
+    }, {
+        preserveState: true,
+        preserveScroll: true,
+    })
 }
 
 // Initialize all families as expanded

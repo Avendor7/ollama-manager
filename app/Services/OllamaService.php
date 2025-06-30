@@ -19,4 +19,14 @@ class OllamaService
         $client = Ollama::client(config('app.ollama_api_endpoint'));
         return $client->models()->runningList();
     }
+
+    public function loadModel($model){
+        $client = Ollama::client(config('app.ollama_api_endpoint'));
+        return $client->models()->load($model);
+    }
+
+    public function unloadModel($model){
+        $client = Ollama::client(config('app.ollama_api_endpoint'));
+        return $client->models()->unload($model);
+    }
 }

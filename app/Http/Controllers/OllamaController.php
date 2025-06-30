@@ -131,4 +131,30 @@ class OllamaController extends Controller
             'X-Accel-Buffering' => 'no',
         ]);
     }
+
+    public function loadModel(Request $request){
+
+        $user = auth()->user();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
+
+        $model = $request->input('model');
+        $this->ollamaService->loadModel($model);
+        return to_route('dashboard');
+    }
+
+    public function unloadModel(Request $request){
+
+        $user = auth()->user();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
+
+        $model = $request->input('model');
+        $this->ollamaService->unloadModel($model);
+        return to_route('dashboard');
+    }
 }

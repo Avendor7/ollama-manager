@@ -2,12 +2,24 @@
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { onMounted } from 'vue';
 import { inject } from 'vue';
-import {type RunningData} from '@types/RunningModel';
+import {type RunningData} from '@/types/RunningModel';
+import Button from '@/components/ui/button/Button.vue';
+import { router } from '@inertiajs/vue3';
 
 const runningList = inject<RunningData>('runningList', []);
 onMounted(() => {
     console.log(runningList.models[0].name);
 })
+
+
+function unloadModel(): void {
+    router.post('/unload-model', {
+        model: runningList.models[0].name,
+    }, {
+        preserveState: true,
+        preserveScroll: true,
+    })
+}
 </script>
 
 <template>
@@ -20,5 +32,6 @@ onMounted(() => {
         <span>
             {{runningList.models?.[0]?.name}}
         </span>
+        <Button @click="unloadModel()">UnloadModel</Button>
     </header>
 </template>

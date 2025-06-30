@@ -30,7 +30,8 @@ Route::get('/status', [StatusController::class, 'index'])->name('status');
 
 Route::get('/model-management', [ModelManagementController::class, 'index'])->name('model-management');
 
-
+Route::post('/load-model', [OllamaController::class, 'loadModel'])->middleware(['auth', 'verified'])->name('load-model');
+Route::post('/unload-model', [OllamaController::class, 'unloadModel'])->middleware(['auth', 'verified'])->name('unload-model');
 
 
 require __DIR__.'/settings.php';
