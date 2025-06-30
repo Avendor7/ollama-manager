@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "852409818b2b89b43f9699d672285cd7",
+    "content-hash": "df9672f6a19722cfd1cc9b1c941e052d",
     "packages": [
         {
             "name": "ardagnsrn/ollama-php",
-            "version": "1.0.5",
+            "version": "dev-add-load-unload",
             "source": {
                 "type": "git",
-                "url": "https://github.com/ArdaGnsrn/ollama-php.git",
-                "reference": "7673ae8eb7e9af207a9cccd07437ea6c50a540b3"
+                "url": "https://github.com/Avendor7/ollama-php.git",
+                "reference": "12440943ad4476ce01ba653294846f6fbe85cbf9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ArdaGnsrn/ollama-php/zipball/7673ae8eb7e9af207a9cccd07437ea6c50a540b3",
-                "reference": "7673ae8eb7e9af207a9cccd07437ea6c50a540b3",
+                "url": "https://api.github.com/repos/Avendor7/ollama-php/zipball/12440943ad4476ce01ba653294846f6fbe85cbf9",
+                "reference": "12440943ad4476ce01ba653294846f6fbe85cbf9",
                 "shasum": ""
             },
             "require": {
@@ -35,7 +35,22 @@
                     "ArdaGnsrn\\Ollama\\": "src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "ArdaGnsrn\\Ollama\\Tests\\": "tests"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "vendor/bin/pest"
+                ],
+                "test-coverage": [
+                    "vendor/bin/pest --coverage"
+                ],
+                "format": [
+                    "vendor/bin/pint"
+                ]
+            },
             "license": [
                 "MIT"
             ],
@@ -60,10 +75,9 @@
                 "ollama-php"
             ],
             "support": {
-                "issues": "https://github.com/ArdaGnsrn/ollama-php/issues",
-                "source": "https://github.com/ArdaGnsrn/ollama-php/tree/1.0.5"
+                "source": "https://github.com/Avendor7/ollama-php/tree/add-load-unload"
             },
-            "time": "2025-06-12T19:13:49+00:00"
+            "time": "2025-06-30T21:59:29+00:00"
         },
         {
             "name": "brick/math",
@@ -9648,7 +9662,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "ardagnsrn/ollama-php": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
