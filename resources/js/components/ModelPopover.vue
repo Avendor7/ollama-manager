@@ -103,7 +103,7 @@ interface ModelList {
 interface Props {
     modelList?: ModelList;
 }
-const runningList = inject<RunningData>('runningList', []);
+const runningList = inject<RunningData>('runningList', { models: [] });
 
 const props = defineProps<Props>();
 
