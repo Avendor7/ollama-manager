@@ -1,93 +1,113 @@
 <template>
-  <Head title="Dashboard" />
-  <AppLayout :breadcrumbs="breadcrumbs" :chat-sessions="chatSessions"
-             :current-chat-id="currentChatId"
-  >
-    <div class="flex h-full flex-1 bg-white dark:bg-zinc-900 overflow-hidden rounded-b-2xl">
-      <!-- Main Chat Area -->
-      <div class="flex-1 flex flex-col h-full">
-        <!-- Chat Messages -->
-        <div ref="chatScroll" class="overflow-y-auto px-6 py-4 space-y-6 bg-zinc-50 dark:bg-zinc-900 h-[calc(100vh-160px)]" id="chat-scroll">
-          <template v-for="(msg, idx) in chatMessages" :key="idx">
-            <div v-if="msg.role === 'user'" class="flex justify-end">
-              <div class="max-w-[70%] bg-blue-500 text-white rounded-xl px-4 py-2 shadow-md whitespace-pre-line">
-                {{ msg.content }}
-              </div>
-            </div>
-            <div v-else class="flex justify-start">
-              <div class="flex items-end gap-2">
-                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-blue-600 flex items-center justify-center text-white font-bold text-lg">O</div>
-                <div class="max-w-[70%] bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-xl px-4 py-2 shadow-md whitespace-pre-line">
-                    {{ msg.content }}
+    <Head title="Dashboard" />
+    <AppLayout :breadcrumbs="breadcrumbs" :chat-sessions="chatSessions" :current-chat-id="currentChatId">
+        <div class="flex h-full flex-1 overflow-hidden rounded-b-2xl bg-white dark:bg-zinc-900">
+            <!-- Main Chat Area -->
+            <div class="flex h-full flex-1 flex-col">
+                <!-- Chat Messages -->
+                <div ref="chatScroll" class="h-[calc(100vh-160px)] space-y-6 overflow-y-auto bg-zinc-50 px-6 py-4 dark:bg-zinc-900" id="chat-scroll">
+                    <template v-for="(msg, idx) in chatMessages" :key="idx">
+                        <div v-if="msg.role === 'user'" class="flex justify-end">
+                            <div class="max-w-[70%] rounded-xl bg-blue-500 px-4 py-2 whitespace-pre-line text-white shadow-md">
+                                {{ msg.content }}
+                            </div>
+                        </div>
+                        <div v-else class="flex justify-start">
+                            <div class="flex items-end gap-2">
+                                <div
+                                    class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-green-400 to-blue-600 text-lg font-bold text-white"
+                                >
+                                    O
+                                </div>
+                                <div
+                                    class="max-w-[70%] rounded-xl bg-zinc-200 px-4 py-2 whitespace-pre-line text-zinc-900 shadow-md dark:bg-zinc-800 dark:text-zinc-100"
+                                >
+                                    {{ msg.content }}
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <div v-if="loading" class="flex animate-pulse justify-start">
+                        <div class="flex items-end gap-2">
+                            <div
+                                class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-green-400 to-blue-600 text-lg font-bold text-white"
+                            >
+                                O
+                            </div>
+                            <div class="max-w-[70%] rounded-xl bg-zinc-200 px-4 py-2 text-zinc-900 shadow-md dark:bg-zinc-800 dark:text-zinc-100">
+                                <span class="opacity-60">Ollama is thinking...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-if="showData" class="flex justify-start">
+                        <div class="flex items-end gap-2">
+                            <div
+                                class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-green-400 to-blue-600 text-lg font-bold text-white"
+                            >
+                                O
+                            </div>
+                            <div
+                                class="max-w-[70%] rounded-xl bg-zinc-200 px-4 py-2 whitespace-pre-line text-zinc-900 shadow-md dark:bg-zinc-800 dark:text-zinc-100"
+                            >
+                                {{ data }}
+                            </div>
+                        </div>
+                    </div>
+                    <div v-if="error" class="px-2 text-sm text-red-500">{{ error }}</div>
+                    <div v-if="isFetching">Connecting...</div>
+                    <div v-if="isStreaming">Generating...</div>
                 </div>
-              </div>
-            </div>
 
-          </template>
-          <div v-if="loading" class="flex justify-start animate-pulse">
-            <div class="flex items-end gap-2">
-              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-blue-600 flex items-center justify-center text-white font-bold text-lg">O</div>
-              <div class="max-w-[70%] bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-xl px-4 py-2 shadow-md">
-                <span class="opacity-60">Ollama is thinking...</span>
-              </div>
+                <!-- Chat Input -->
+                <div
+                    class="flex h-[80px] w-full items-center gap-2 border-t border-zinc-200 bg-white px-4 py-3 dark:border-zinc-800 dark:bg-zinc-900"
+                >
+                    <ModelPopover :modelList="modelList" />
+                    <input
+                        v-model="input"
+                        :disabled="loading"
+                        @keydown="handleKey"
+                        type="text"
+                        placeholder="Type your message..."
+                        class="flex-1 rounded-lg bg-zinc-100 px-4 py-2 text-zinc-900 transition focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-zinc-800 dark:text-zinc-100"
+                    />
+                    <button
+                        @click="sendMessage"
+                        :disabled="loading || !input.trim()"
+                        class="rounded-lg bg-blue-500 px-4 py-2 font-semibold text-white shadow transition hover:bg-blue-600 disabled:opacity-60"
+                    >
+                        <span v-if="!loading">Send</span>
+                        <span v-else class="flex items-center gap-1"
+                            ><svg class="mr-1 h-4 w-4 animate-spin" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg
+                            >Sending</span
+                        >
+                    </button>
+                </div>
             </div>
-          </div>
-          <div v-if="showData" class="flex justify-start">
-            <div class="flex items-end gap-2">
-              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-blue-600 flex items-center justify-center text-white font-bold text-lg">O</div>
-              <div class="max-w-[70%] bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-xl px-4 py-2 shadow-md whitespace-pre-line">
-                {{ data }}
-              </div>
-            </div>
-          </div>
-          <div v-if="error" class="text-red-500 px-2 text-sm">{{ error }}</div>
-          <div v-if="isFetching">Connecting...</div>
-          <div v-if="isStreaming">Generating...</div>
         </div>
-
-        <!-- Chat Input -->
-        <div class="border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-3 flex items-center gap-2 w-full h-[80px]">
-            <ModelPopover :modelList="modelList" />
-        <input
-            v-model="input"
-            :disabled="loading"
-            @keydown="handleKey"
-            type="text"
-            placeholder="Type your message..."
-            class="flex-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-          />
-          <button
-            @click="sendMessage"
-            :disabled="loading || !input.trim()"
-            class="bg-blue-500 hover:bg-blue-600 text-white rounded-lg px-4 py-2 font-semibold shadow transition disabled:opacity-60"
-          >
-            <span v-if="!loading">Send</span>
-            <span v-else class="flex items-center gap-1"><svg class="animate-spin h-4 w-4 mr-1" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>Sending</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  </AppLayout>
+    </AppLayout>
 </template>
 
 <script setup lang="ts">
 import { ref, nextTick, onMounted, watch, provide } from 'vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/vue3';
-import { useStream } from "@laravel/stream-vue";
+import { Head, router } from '@inertiajs/vue3';
+import { useStream } from '@laravel/stream-vue';
 import ModelPopover from '@/components/ModelPopover.vue';
-import {type RunningData} from '@/types/RunningModel';
+import { type RunningData } from '@/types/RunningModel';
 
 interface MessageType {
-  id?: number;
-  chat_session_id?: number;
-  content: string;
-  role: string;
-  token_count?: number;
-  metadata?: any;
-  created_at?: string;
-  updated_at?: string;
+    id?: number;
+    chat_session_id?: number;
+    content: string;
+    role: string;
+    token_count?: number;
+    metadata?: any;
+    created_at?: string;
+    updated_at?: string;
 }
 
 interface ChatSession {
@@ -118,12 +138,12 @@ interface ModelList {
 }
 
 interface Props {
-  user: any;
-  messages: MessageType[];
-  chatSessions: ChatSession[];
-  currentChatId: number;
-  modelList?: ModelList;
-  runningList?: RunningData;
+    user: any;
+    messages: MessageType[];
+    chatSessions: ChatSession[];
+    currentChatId: number;
+    modelList?: ModelList;
+    runningList?: RunningData;
 }
 
 const props = defineProps<Props>();
@@ -158,12 +178,14 @@ const { data, isFetching, isStreaming, send } = useStream("/api/ollama/chat",{
 });
 
 // Watch for changes in props.messages and update the local chatMessages ref
-watch(() => props.messages, (newMessages) => {
-    chatMessages.value = newMessages.length > 0 ?
-        newMessages :
-        [{ role: 'assistant', content: 'Hello! How can I help you today?' }];
-    scrollToBottom();
-}, { immediate: true });
+watch(
+    () => props.messages,
+    (newMessages) => {
+        chatMessages.value = newMessages.length > 0 ? newMessages : [{ role: 'assistant', content: 'Hello! How can I help you today?' }];
+        scrollToBottom();
+    },
+    { immediate: true },
+);
 
 function scrollToBottom() {
     nextTick(() => {
@@ -175,8 +197,21 @@ function scrollToBottom() {
 
 onMounted(scrollToBottom);
 onMounted(() => {
-    console.log(props.runningList);
-})
+    //TODO move this to the backend
+    if (!props.runningList?.models?.[0]) {
+        console.log('no model, starting llama3.1');
+        router.post(
+            '/load-model',
+            {
+                model: 'llama3.1',
+            },
+            {
+                preserveState: true,
+                preserveScroll: true,
+            },
+        );
+    }
+});
 async function sendMessage() {
     if (!input.value.trim() || loading.value) return;
     error.value = '';

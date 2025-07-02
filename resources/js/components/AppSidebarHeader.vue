@@ -8,7 +8,7 @@ import { router } from '@inertiajs/vue3';
 
 const runningList = inject<RunningData>('runningList', []);
 onMounted(() => {
-    console.log(runningList.models[0].name);
+    //console.log(runningList.models[0].name);
 })
 
 
