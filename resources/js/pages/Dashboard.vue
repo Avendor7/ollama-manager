@@ -147,9 +147,12 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const selectedModel = ref<string>(props.user.selected_model);
+
 provide('chatSessions', props.chatSessions);
 provide('currentChatId', props.currentChatId);
 provide('runningList', props.runningList);
+provide('selectedModel', selectedModel.value);
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
@@ -197,6 +200,7 @@ function scrollToBottom() {
 
 onMounted(scrollToBottom);
 onMounted(() => {
+    console.log(selectedModel.value);
     //TODO move this to the backend
     if (!props.runningList?.models?.[0]) {
         console.log('no model, starting llama3.1');
