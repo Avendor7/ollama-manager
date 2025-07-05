@@ -1,11 +1,10 @@
 <template>
     <Popover>
         <PopoverTrigger class="rounded-lg bg-blue-500 px-4 py-2 font-semibold text-white shadow transition hover:bg-blue-600 disabled:opacity-60 cursor-pointer">
-            <!--            {{runningList.models?.[0]?.name}}-->
-            {{ selectedModel }}
+            {{ modelStore.selectedModel }}
         </PopoverTrigger>
         <PopoverContent class="max-h-[80vh] w-[80%] overflow-hidden" side="top" align="start">
-            <div v-if="modelList && modelList.models && modelList.models.length > 0">
+            <div v-if="modelStore.modelList && modelStore.modelList.models && modelStore.modelList.models.length > 0">
                 <!-- Sort Controls -->
                 <div class="mb-3 flex gap-2">
                     <select v-model="sortBy" class="bg-background rounded border px-2 py-1 text-xs">
@@ -64,11 +63,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, Ref } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { inject } from 'vue';
-//import { type RunningData } from '@/types/RunningModel';
-import { router } from '@inertiajs/vue3';
+import { useModelStore } from '@/stores/modelStore';
 
 interface Model {
     name: string;
@@ -86,27 +83,18 @@ interface Model {
     };
 }
 
-interface ModelList {
-    models: Model[];
-}
-
-interface Props {
-    modelList?: ModelList;
-}
-//const runningList = inject<RunningData>('runningList', { models: [] });
-const selectedModel = inject<Ref<string>>('selectedModel', ref(""))
-const props = defineProps<Props>();
+const modelStore = useModelStore();
 
 type SortKey = 'name' | 'size' | 'family' | 'parameterSize';
 type SortOrder = 'asc' | 'desc';
 
-const sortBy: Ref<SortKey> = ref('name');
-const sortOrder: Ref<SortOrder> = ref('asc');
+const sortBy = ref<SortKey>('name');
+const sortOrder = ref<SortOrder>('asc');
 
 const sortedModels = computed((): Model[] => {
-    if (!props.modelList?.models?.length) return [];
+    if (!modelStore.modelList?.models?.length) return [];
 
-    return [...props.modelList.models].sort((a: Model, b: Model): number => {
+    return [...modelStore.modelList.models].sort((a: Model, b: Model): number => {
         let aVal: string | number;
         let bVal: string | number;
 
@@ -143,7 +131,7 @@ const sortedModels = computed((): Model[] => {
 type ModelsByFamilyType = Record<string, Model[]>;
 
 const modelsByFamily = computed((): ModelsByFamilyType => {
-    if (!props.modelList?.models?.length) return {} as ModelsByFamilyType;
+    if (!modelStore.modelList?.models?.length) return {} as ModelsByFamilyType;
 
     // Group models by family with proper typing
     const grouped: ModelsByFamilyType = {};
@@ -169,16 +157,7 @@ function toggleFamily(family: string): void {
 }
 
 function loadModel(modelName: string): void {
-    router.post(
-        '/load-model',
-        {
-            model: modelName,
-        },
-        {
-            preserveState: true,
-            preserveScroll: true,
-        },
-    );
+    modelStore.loadModel(modelName);
 }
 
 // Initialize all families as expanded

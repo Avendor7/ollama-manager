@@ -62,7 +62,7 @@
                 <div
                     class="flex h-[80px] w-full items-center gap-2 border-t border-zinc-200 bg-white px-4 py-3 dark:border-zinc-800 dark:bg-zinc-900"
                 >
-                    <ModelPopover :modelList="modelList" />
+                    <ModelPopover />
                     <input
                         v-model="input"
                         :disabled="loading"
@@ -98,6 +98,7 @@ import { Head, router } from '@inertiajs/vue3';
 import { useStream } from '@laravel/stream-vue';
 import ModelPopover from '@/components/ModelPopover.vue';
 import { type RunningData } from '@/types/RunningModel';
+import { useModelStore } from '@/stores/modelStore';
 
 interface MessageType {
     id?: number;
@@ -147,12 +148,21 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const selectedModel = ref<string>(props.user.selected_model);
+const modelStore = useModelStore();
+
+// Initialize the store with data from props
+if (props.modelList) {
+    modelStore.setModelList(props.modelList);
+}
+if (props.runningList) {
+    modelStore.setRunningList(props.runningList);
+}
+if (props.user.selected_model) {
+    modelStore.setSelectedModel(props.user.selected_model);
+}
 
 provide('chatSessions', props.chatSessions);
 provide('currentChatId', props.currentChatId);
-provide('runningList', props.runningList);
-provide('selectedModel', selectedModel.value);
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
@@ -200,9 +210,9 @@ function scrollToBottom() {
 
 onMounted(scrollToBottom);
 onMounted(() => {
-    console.log(selectedModel.value);
+    console.log(modelStore.selectedModel);
     //TODO move this to the backend
-    if (!props.runningList?.models?.[0]) {
+    if (!modelStore.runningList?.models?.[0]) {
         console.log('no model, starting llama3.1');
         router.post(
             '/load-model',
