@@ -15,6 +15,7 @@ class ChatSession extends Model
         'user_id',
         'title',
         'is_active',
+        'model'
     ];
 
     public function user(): BelongsTo
@@ -31,6 +32,7 @@ class ChatSession extends Model
     {
         return [
             'is_active' => 'boolean',
+            'model' => 'string'
         ];
     }
 

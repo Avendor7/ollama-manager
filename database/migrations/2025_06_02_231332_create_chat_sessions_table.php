@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('title')->nullable();
             $table->boolean('is_active')->default(true);
+            $table->string('model')->default('llama3.2:1b');
             $table->timestamps();
 
             $table->index(['user_id', 'created_at']);
