@@ -1,25 +1,35 @@
 <script setup lang="ts">
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { onMounted } from 'vue';
-import { inject } from 'vue';
-import {type RunningData} from '@/types/RunningModel';
 import Button from '@/components/ui/button/Button.vue';
-import { router } from '@inertiajs/vue3';
+import { useModelStore } from '@/stores/modelStore';
 
-const runningList = inject<RunningData>('runningList', []);
+// Access the store
+const modelStore = useModelStore();
+
+// Now you can use the store's state or actions, e.g.:
+
 onMounted(() => {
     //console.log(runningList.models[0].name);
+    console.log(modelStore.getRunningList?.models[0]);
+
 })
 
 
 function unloadModel(): void {
-    router.post('/unload-model', {
-        model: runningList.models[0].name,
-    }, {
-        preserveState: true,
-        preserveScroll: true,
-    })
+    // router.post('/unload-model', {
+    //     model: runningList.models[0].name,
+    // }, {
+    //     preserveState: true,
+    //     preserveScroll: true,
+    // })
 }
+
+function bytesToGigabytes(bytes: number): string {
+    const gigabytes = bytes / (1024 * 1024 * 1024);
+    return gigabytes.toFixed(2);
+}
+
 </script>
 
 <template>
@@ -30,5 +40,9 @@ function unloadModel(): void {
             <SidebarTrigger class="-ml-1" />
         </div>
         <Button class="rounded-lg bg-blue-500 px-4 py-2 font-semibold text-white shadow transition hover:bg-blue-600 disabled:opacity-60 cursor-pointer" @click="unloadModel()">UnloadModel</Button>
+        <div>
+            <span>Running Model: <b>{{modelStore.getRunningList?.models[0]?.name}}</b></span>
+            <span> Size: <b>{{bytesToGigabytes(modelStore.getRunningList?.models[0]?.size ?? 0)}}GB</b></span>
+        </div>
     </header>
 </template>
