@@ -62,7 +62,6 @@
                 <div
                     class="flex h-[80px] w-full items-center gap-2 border-t border-zinc-200 bg-white px-4 py-3 dark:border-zinc-800 dark:bg-zinc-900"
                 >
-                    <ModelPopover />
                     <input
                         v-model="input"
                         :disabled="loading"
@@ -96,7 +95,6 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/vue3';
 import { useStream } from '@laravel/stream-vue';
-import ModelPopover from '@/components/ModelPopover.vue';
 import { type RunningData } from '@/types/RunningModel';
 import { useModelStore } from '@/stores/modelStore';
 
