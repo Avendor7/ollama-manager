@@ -40,7 +40,9 @@ function bytesToGigabytes(bytes: number): string {
         <div class="flex items-center gap-2">
             <SidebarTrigger class="-ml-1" />
         </div>
-        <ModelPopover />
+        <div class="flex justify-center gap-2 w-full">
+            <ModelPopover />
+        </div>
 
         <Button v-if="modelStore.getRunningList?.models[0]" class="rounded-lg bg-blue-500 px-4 py-2 font-semibold text-white shadow transition hover:bg-blue-600 disabled:opacity-60 cursor-pointer" @click="unloadModel()">UnloadModel</Button>
         <div>
