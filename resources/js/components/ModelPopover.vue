@@ -3,7 +3,7 @@
         <PopoverTrigger class="rounded-lg bg-blue-500 px-4 py-2 font-semibold text-white shadow transition hover:bg-blue-600 disabled:opacity-60 cursor-pointer">
             {{ modelStore.selectedModel }}
         </PopoverTrigger>
-        <PopoverContent class="max-h-[80vh] w-[80%] overflow-hidden" side="top" align="center">
+        <PopoverContent class="max-h-[80vh] w-[100%] overflow-hidden" side="top" align="center">
             <div v-if="modelStore.modelList && modelStore.modelList.models && modelStore.modelList.models.length > 0">
                 <!-- Sort Controls -->
                 <div class="mb-3 flex gap-2">
