@@ -1,8 +1,24 @@
 <template>
     <Popover>
-        <PopoverTrigger class="rounded-lg bg-blue-500 px-4 py-2 font-semibold text-white shadow transition hover:bg-blue-600 disabled:opacity-60 cursor-pointer">
-            {{ modelStore.selectedModel }}
+        <PopoverTrigger
+            class="relative flex items-center gap-1 rounded-lg bg-blue-500 px-4 py-2 font-semibold text-white shadow transition hover:bg-blue-600 disabled:opacity-60 cursor-pointer group"
+        >
+            <div class="flex items-center gap-2">
+                <span>{{ modelStore.selectedModel || 'Select Model' }}</span>
+                <ChevronDown class="h-4 w-4 opacity-70" />
+            </div>
+
+            <!-- Eject Button (always visible, enabled only when a model is running) -->
+            <div
+                @click.stop="modelStore.getRunningList?.models[0] && unloadModel()"
+                class="ml-2 rounded-full p-1.5 text-white"
+                :class="modelStore.getRunningList?.models[0] ? 'bg-red-500 hover:bg-red-600 cursor-pointer' : 'bg-gray-400 cursor-not-allowed'"
+                :title="modelStore.getRunningList?.models[0] ? 'Eject Model' : 'No Model Running'"
+            >
+                <Upload class="h-3.5 w-3.5" />
+            </div>
         </PopoverTrigger>
+
         <PopoverContent class="max-h-[80vh] w-[100%] overflow-hidden" side="top" align="center">
             <div v-if="modelStore.modelList && modelStore.modelList.models && modelStore.modelList.models.length > 0">
                 <!-- Sort Controls -->
@@ -18,24 +34,43 @@
                     </button>
                 </div>
 
+                <!-- Model Status Display (when a model is running) -->
+                <div v-if="modelStore.getRunningList?.models[0]" class="mb-3 flex items-center justify-between rounded-md bg-blue-50 p-2 dark:bg-blue-950/30">
+                    <div class="flex items-center gap-2">
+                        <div class="h-2 w-2 rounded-full bg-green-500 animate-pulse"></div>
+                        <span class="text-xs">
+                            Running: <span class="font-semibold">{{ modelStore.getRunningList.models[0].name }}</span>
+                            ({{ formatSize(modelStore.getRunningList.models[0].size) }})
+                        </span>
+                    </div>
+                    <button
+                        @click="unloadModel()"
+                        class="flex items-center gap-1 rounded bg-red-100 px-2 py-1 text-xs text-red-600 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50"
+                    >
+                        <Upload class="h-3 w-3" />
+                        <span>Eject</span>
+                    </button>
+                </div>
+
                 <!-- Sectioned Container -->
                 <div class="max-h-[70vh] space-y-4 overflow-y-auto pr-2">
                     <div v-for="(models, family) in modelsByFamily" :key="family" class="space-y-2">
                         <button
                             @click="toggleFamily(family)"
-                            class="flex w-full items-center justify-between rounded bg-zinc-100 px-1 py-1 text-left text-sm font-bold dark:bg-zinc-800"
+                            class="flex w-full items-center justify-between rounded bg-zinc-100 px-2 py-1.5 text-left text-sm font-bold dark:bg-zinc-800"
                         >
                             <span>{{ family }} ({{ models.length }})</span>
                             <span>{{ expandedFamilies[family] ? '▼' : '►' }}</span>
                         </button>
 
                         <!-- Models Grid for this Family -->
-                        <div v-if="expandedFamilies[family]" class="grid grid-cols-4 gap-3 sm:grid-cols-4">
+                        <div v-if="expandedFamilies[family]" class="grid grid-cols-2 gap-3 sm:grid-cols-4">
                             <div
                                 v-for="(model, index) in models"
                                 :key="index"
                                 @click="loadModel(model.name)"
-                                class="hover:bg-accent/50 cursor-pointer rounded-lg border p-3 transition-colors"
+                                class="group relative hover:bg-accent/50 cursor-pointer rounded-lg border p-3 transition-colors"
+                                :class="{'ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-900/20': modelStore.getRunningList?.models[0]?.name === model.name}"
                             >
                                 <h2 class="mb-1 truncate text-sm font-semibold">{{ model.name }}</h2>
                                 <p v-if="model.description" class="text-muted-foreground mb-2 line-clamp-2 text-xs">
@@ -52,6 +87,15 @@
                                         </p>
                                     </div>
                                 </div>
+
+                                <!-- Running indicator for currently loaded model -->
+                                <div
+                                    v-if="modelStore.getRunningList?.models[0]?.name === model.name"
+                                    class="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-green-500 text-white"
+                                    title="Currently Running"
+                                >
+                                    <Check class="h-3 w-3" />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -66,6 +110,8 @@
 import { ref, computed, watch } from 'vue';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useModelStore } from '@/stores/modelStore';
+import { router } from '@inertiajs/vue3';
+import { ChevronDown, Check, Upload } from 'lucide-vue-next';
 
 interface Model {
     name: string;
@@ -158,6 +204,17 @@ function toggleFamily(family: string): void {
 
 function loadModel(modelName: string): void {
     modelStore.loadModel(modelName);
+}
+
+function unloadModel(): void {
+    if (modelStore.getRunningList?.models[0]) {
+        router.post('/unload-model', {
+            model: modelStore.getRunningList.models[0].name,
+        }, {
+            preserveState: true,
+            preserveScroll: true,
+        });
+    }
 }
 
 // Initialize all families as expanded
