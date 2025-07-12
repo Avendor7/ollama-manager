@@ -4,7 +4,7 @@
             class="relative flex items-center gap-1 rounded-lg bg-blue-500 px-4 py-2 font-semibold text-white shadow transition hover:bg-blue-600 disabled:opacity-60 cursor-pointer group"
         >
             <div class="flex items-center gap-2">
-                <span>{{ modelStore.selectedModel || 'Select Model' }}</span>
+                <span>{{ modelStore.getRunningList?.models[0] ? modelStore.getRunningList.models[0].name : 'Load Model' }}</span>
                 <ChevronDown class="h-4 w-4 opacity-70" />
             </div>
 
