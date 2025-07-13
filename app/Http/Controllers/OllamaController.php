@@ -84,8 +84,9 @@ class OllamaController extends Controller
             'is_active' => true,
         ]);
 
-        // Get the model list
+        // Get the model list and running list
         $modelList = $this->ollamaService->getModelList();
+        $runningList = $this->ollamaService->getRunningList();
 
         // Return a fresh state with empty messages
         return Inertia::render('Dashboard', [
@@ -96,6 +97,7 @@ class OllamaController extends Controller
                                         ->get(),
             'currentChatId' => $chatSession->id,
             'modelList' => $modelList,
+            'runningList' => $runningList,
         ]);
     }
 
