@@ -3,7 +3,7 @@
     <AppLayout :breadcrumbs="breadcrumbs" :chat-sessions="chatSessions" :current-chat-id="currentChatId">
         <div class="flex h-full flex-1 overflow-hidden rounded-b-2xl bg-white dark:bg-zinc-900">
             <!-- Main Chat Area -->
-            <div class="flex h-full flex-1 flex-col">
+            <div class="mx-auto flex h-full w-full max-w-[50%] flex-1 flex-col">
                 <!-- Chat Messages -->
                 <div ref="chatScroll" class="h-[calc(100vh-160px)] space-y-6 overflow-y-auto bg-zinc-50 px-6 py-4 dark:bg-zinc-900" id="chat-scroll">
                     <template v-for="(msg, idx) in chatMessages" :key="idx">
@@ -59,30 +59,25 @@
                 </div>
 
                 <!-- Chat Input -->
-                <div
-                    class="flex h-[80px] w-full items-center gap-2 border-t border-zinc-200 bg-white px-4 py-3 dark:border-zinc-800 dark:bg-zinc-900"
-                >
-                    <input
-                        v-model="input"
-                        :disabled="loading"
-                        @keydown="handleKey"
-                        type="text"
-                        placeholder="Type your message..."
-                        class="flex-1 rounded-lg bg-zinc-100 px-4 py-2 text-zinc-900 transition focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-zinc-800 dark:text-zinc-100"
-                    />
-                    <button
-                        @click="sendMessage"
-                        :disabled="loading || !input.trim()"
-                        class="rounded-lg bg-blue-500 px-4 py-2 font-semibold text-white shadow transition hover:bg-blue-600 disabled:opacity-60"
-                    >
-                        <span v-if="!loading">Send</span>
-                        <span v-else class="flex items-center gap-1"
-                            ><svg class="mr-1 h-4 w-4 animate-spin" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg
-                            >Sending</span
+                <div class="relative w-full border-t border-zinc-200 bg-white px-2 py-3 dark:border-zinc-800 dark:bg-zinc-900">
+                    <div class="relative flex items-center">
+                        <input
+                            v-model="input"
+                            :disabled="loading"
+                            @keydown="handleKey"
+                            type="text"
+                            placeholder="Type your message..."
+                            class="w-full rounded-full bg-zinc-100 py-3 pl-5 pr-12 text-zinc-900 transition focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-zinc-800 dark:text-zinc-100"
+                        />
+                        <button
+                            @click="sendMessage"
+                            :disabled="loading || !input.trim()"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-blue-500 p-0 text-white transition hover:bg-blue-600 disabled:opacity-50"
+                            :class="{ 'opacity-50': loading || !input.trim() }"
                         >
-                    </button>
+                            <Send v-if="!loading" class="h-5 w-5" />
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -91,6 +86,7 @@
 
 <script setup lang="ts">
 import { ref, nextTick, onMounted, watch, provide } from 'vue';
+import { Send } from 'lucide-vue-next';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/vue3';

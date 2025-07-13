@@ -8,24 +8,6 @@
                     </span>
                     <ChevronDown class="h-4 w-4 text-gray-500 transition-transform duration-200 group-data-[state=open]:rotate-180 dark:text-gray-400" />
                 </div>
-
-                <!-- Eject Button (always visible, enabled only when a model is running) -->
-                <div
-                    @click.stop="modelStore.getRunningList?.models[0] && unloadModel()"
-                    class="ml-1.5 flex h-6 w-6 items-center justify-center rounded-full transition-colors duration-200"
-                    :class="modelStore.getRunningList?.models[0]
-                        ? 'bg-red-100 text-red-600 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-800/50'
-                        : 'bg-gray-100 text-gray-400 dark:bg-gray-700/50 dark:text-gray-500'"
-                    :title="modelStore.getRunningList?.models[0] ? 'Eject Model' : 'No Model Running'"
-                >
-                    <Upload class="h-3.5 w-3.5" />
-                </div>
-
-                <!-- Active indicator -->
-                <span v-if="modelStore.getRunningList?.models[0]" class="absolute -right-1 -top-1 flex h-3 w-3">
-                    <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
-                    <span class="relative inline-flex h-3 w-3 rounded-full bg-green-500"></span>
-                </span>
             </Button>
         </PopoverTrigger>
 
