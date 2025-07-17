@@ -159,4 +159,22 @@ class OllamaController extends Controller
         $this->ollamaService->unloadModel($model);
         return to_route('dashboard');
     }
+
+    /**
+     * Get the currently running model
+     * This endpoint is used for polling the running model status
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getRunningModel()
+    {
+        $user = auth()->user();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
+
+        $runningList = $this->ollamaService->getRunningList();
+        return response()->json($runningList);
+    }
 }

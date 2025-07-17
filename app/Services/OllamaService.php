@@ -16,8 +16,11 @@ class OllamaService
     }
 
     public function getRunningList(){
-        $client = Ollama::client(config('app.ollama_api_endpoint'));
-        return $client->models()->runningList();
+        // Cache the running list for 1 minute to reduce API calls
+        return cache()->remember('ollama_running_list', 60, function () {
+            $client = Ollama::client(config('app.ollama_api_endpoint'));
+            return $client->models()->runningList();
+        });
     }
 
     public function loadModel($model){

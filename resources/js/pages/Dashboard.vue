@@ -85,7 +85,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, onMounted, watch, provide } from 'vue';
+import { ref, nextTick, onMounted, onUnmounted, watch, provide } from 'vue';
 import { Send } from 'lucide-vue-next';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
@@ -205,6 +205,10 @@ function scrollToBottom() {
 onMounted(scrollToBottom);
 onMounted(() => {
     console.log(modelStore.selectedModel);
+
+    // Start polling for running model updates every minute
+    modelStore.startPolling();
+
     //TODO move this to the backend
     if (!modelStore.runningList?.models?.[0]) {
         console.log('no model, starting llama3.1');
@@ -220,6 +224,12 @@ onMounted(() => {
         );
     }
 });
+
+// Clean up polling when component is unmounted
+onUnmounted(() => {
+    modelStore.stopPolling();
+});
+
 async function sendMessage() {
     if (!input.value.trim() || loading.value) return;
     error.value = '';

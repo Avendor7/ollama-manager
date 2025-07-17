@@ -32,6 +32,7 @@ Route::get('/model-management', [ModelManagementController::class, 'index'])->na
 
 Route::post('/load-model', [OllamaController::class, 'loadModel'])->middleware(['auth', 'verified'])->name('load-model');
 Route::post('/unload-model', [OllamaController::class, 'unloadModel'])->middleware(['auth', 'verified'])->name('unload-model');
+Route::get('/ollama/running-model', [OllamaController::class, 'getRunningModel']);
 
 
 require __DIR__.'/settings.php';
