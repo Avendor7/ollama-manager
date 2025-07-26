@@ -84,21 +84,8 @@ class OllamaController extends Controller
             'is_active' => true,
         ]);
 
-        // Get the model list and running list
-        $modelList = $this->ollamaService->getModelList();
-        $runningList = $this->ollamaService->getRunningList();
-
-        // Return a fresh state with empty messages
-        return Inertia::render('Dashboard', [
-            'user' => $user,
-            'messages' => [],
-            'chatSessions' => ChatSession::where('user_id', $user->id)
-                                        ->orderByDesc('created_at')
-                                        ->get(),
-            'currentChatId' => $chatSession->id,
-            'modelList' => $modelList,
-            'runningList' => $runningList,
-        ]);
+        // Redirect to the dashboard route with the new chat ID as a query parameter
+        return redirect()->route('dashboard', ['chat_id' => $chatSession->id]);
     }
 
     /**
