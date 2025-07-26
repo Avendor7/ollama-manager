@@ -39,7 +39,7 @@ class OllamaController extends Controller
         // Get the current chat session (either from query param or most recent)
         $currentChatId = request()->query('chat_id');
         $currentChatSession = $currentChatId
-            ? ChatSession::where('id', $currentChatId)->first()
+            ? ChatSession::where('id', $currentChatId)->where('user_id', $user->id)->first()
             : $chatSessions->first();
 
         // If no chat session exists, create a new one
