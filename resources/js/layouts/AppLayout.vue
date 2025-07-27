@@ -1,28 +1,44 @@
 <script setup lang="ts">
-import AppSidebarLayout from '@/layouts/app/AppSidebarLayout.vue';
+import AppContent from '@/components/AppContent.vue';
+import AppShell from '@/components/AppShell.vue';
+import AppSidebar from '@/components/AppSidebar.vue';
+import AppSidebarHeader from '@/components/AppSidebarHeader.vue';
 import type { BreadcrumbItemType } from '@/types';
+import { provide } from 'vue';
+
+interface ChatSession {
+    id: number;
+    title: string;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+}
 
 interface Props {
     breadcrumbs?: BreadcrumbItemType[];
-    chatSessions?: any[];
+    chatSessions?: ChatSession[];
     currentChatId?: number;
     modelList?: any[];
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
     breadcrumbs: () => [],
     chatSessions: () => [],
     currentChatId: () => 0,
     modelList: () => [],
 });
+
+// Provide the chat sessions to all child components
+provide('chatSessions', props.chatSessions);
+provide('currentChatId', props.currentChatId);
 </script>
 
 <template>
-    <AppSidebarLayout
-        :breadcrumbs="breadcrumbs"
-        :chat-sessions="chatSessions"
-        :current-chat-id="currentChatId"
-    >
-        <slot />
-    </AppSidebarLayout>
+    <AppShell variant="sidebar">
+        <AppSidebar />
+        <AppContent variant="sidebar">
+            <AppSidebarHeader :breadcrumbs="breadcrumbs" />
+            <slot />
+        </AppContent>
+    </AppShell>
 </template>
