@@ -170,7 +170,11 @@ const loading = ref(false);
 const error = ref('');
 const chatScroll = ref<HTMLElement | null>(null);
 const showData = ref(false);
-const { data, isFetching, isStreaming, send } = useStream("/api/ollama/chat",{
+const { data, isFetching, isStreaming, send } = useStream("/api/ollama/chat", {
+    headers: {
+        'Accept': 'text/event-stream',
+        'Content-Type': 'application/json',
+    },
     onData: (data: any) => {
         console.log(data);
         showData.value = true;

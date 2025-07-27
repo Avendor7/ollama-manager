@@ -10,8 +10,8 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { Link } from '@inertiajs/vue3';
-import AppLogo from './AppLogo.vue';
-import ChatSessions from '@/components/ChatSessions.vue';
+import AppLogo from '@/components/core/AppLogo.vue';
+import ChatSessions from '@/components/chat/ChatSessions.vue';
 
 </script>
 
