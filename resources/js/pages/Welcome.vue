@@ -72,5 +72,5 @@ import { Head, Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 const page = usePage();
 const user = computed(() => page.props.auth.user)
-import AppLogo from '@/components/AppLogo.vue';
+import AppLogo from '@/components/layout/AppLogo.vue';
 </script>
