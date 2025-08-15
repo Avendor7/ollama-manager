@@ -2,7 +2,7 @@
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { onMounted } from 'vue';
 import { useModelStore } from '@/stores/modelStore';
-import ModelPopover from '@/components/ModelPopover.vue';
+import SelectModelPopover from '@/components/SelectModelPopover.vue';
 
 // Access the store
 const modelStore = useModelStore();
@@ -26,7 +26,7 @@ function bytesToGigabytes(bytes: number): string {
         </div>
 
         <div class="flex justify-center gap-2 w-full">
-            <ModelPopover />
+            <SelectModelPopover />
         </div>
 
         <div v-if="modelStore.getRunningList?.models[0]" class="hidden md:flex items-center gap-2 text-sm">

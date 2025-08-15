@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import NavUser from '@/components/NavUser.vue';
+import NavUser from '@/components/features/user/NavUser.vue';
 import {
     Sidebar,
     SidebarContent,
