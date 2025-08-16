@@ -11,7 +11,7 @@
             </Button>
         </PopoverTrigger>
 
-        <PopoverContent class="max-h-[80vh] w-[100%] overflow-hidden" side="top" align="center">
+        <PopoverContent class="max-h-[80vh] w-[90vw] max-w-[900px] overflow-hidden sm:w-[600px]" side="top" align="center">
             <div v-if="modelStore.modelList && modelStore.modelList.models && modelStore.modelList.models.length > 0">
                 <!-- Sort Controls -->
                 <div class="mb-3 flex gap-2">
@@ -56,7 +56,7 @@
                         </button>
 
                         <!-- Models Grid for this Family -->
-                        <div v-if="expandedFamilies[family]" class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                        <div v-if="expandedFamilies[family]" class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                             <div
                                 v-for="(model, index) in models"
                                 :key="index"
